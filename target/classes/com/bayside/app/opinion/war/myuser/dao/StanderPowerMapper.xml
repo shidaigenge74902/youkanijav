@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.myuser.dao.StanderPowerMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="setword" property="setword" jdbcType="INTEGER" />
+    <result column="cansetword" property="cansetword" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="typename" property="typename" jdbcType="VARCHAR" />
+    <result column="typeid" property="typeid" jdbcType="VARCHAR" />
+    <result column="typecode" property="typecode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="isupdate" property="isupdate" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, setword, cansetword, name, typename, typeid, status, typecode, isupdate
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_standerpower
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectStanderByTypeid" resultMap="BaseResultMap">
+    select * from bs_standerpower group by typeid
+  </select>
+   <select id="selectnewStanderPower" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+      select 
+    <include refid="Base_Column_List" />
+    from bs_standerpower
+    where 
+       typeid = #{typeid,jdbcType=VARCHAR}
+   
+   </select>
+    <select id="selectOnlyStanderPower" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+      select 
+    <include refid="Base_Column_List" />
+    from bs_standerpower
+    where 1=1
+    <if test="typeid !=null and typeid !=''">
+      and typeid = #{typeid,jdbcType=VARCHAR}
+    </if>
+    <if test="typename !=null and typename !=''">
+      and typename = #{typename,jdbcType=VARCHAR}
+    </if>
+    <if test="typecode !=null and typecode !=''">
+      and typecode = #{typecode,jdbcType=VARCHAR}
+    </if>
+    <if test="name !=null and name !=''">
+      and name = #{name,jdbcType=VARCHAR}
+    </if>
+   </select>
+   <select id="selectStanderPower" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+     SELECT 
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjectnum,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) personnum,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) jiancenum,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) yujingnum,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudnum,
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='人工报告开通' THEN status  END) setReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='微监测开通' THEN status  END) microopen,
+		MAX(CASE WHEN NAME='子账号个数' THEN cansetword  END) sonnum,
+		MAX(CASE WHEN NAME='交易开通' THEN status  END) setTrade,
+		MAX(CASE WHEN NAME='有效期限' THEN cansetword  END) expirdate,
+		MAX(CASE WHEN NAME='操作开通' THEN isupdate  END) isupdate,
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasisnum,
+		MAX(CASE WHEN NAME='登录账号个数' THEN cansetword  END)loginnum,
+		MAX(CASE WHEN NAME='查询天数' THEN cansetword  END) checkdays,
+		MAX(CASE WHEN NAME='媒体开通' THEN status  END) ismedia
+		FROM bs_standerpower where 1=1 
+		   and typeid=#{typeid,jdbcType=VARCHAR}
+  </select>
+     <select id="checkStanderPower" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+     SELECT 
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjectnum,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) personnum,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) jiancenum,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) yujingnum,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudnum,
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='人工报告开通' THEN status  END) setReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='微监测开通' THEN status  END) microopen,
+		MAX(CASE WHEN NAME='子账号个数' THEN cansetword  END) sonnum,
+		MAX(CASE WHEN NAME='交易开通' THEN status  END) setTrade,
+		MAX(CASE WHEN NAME='有效期限' THEN cansetword  END) expirdate,
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasisnum,
+		MAX(CASE WHEN NAME='操作开通' THEN isupdate  END) isupdate
+		FROM bs_standerpower where 1=1 
+		<if test="typename!=null and typename!=''">
+		   and typename = #{typename,jdbcType=VARCHAR}
+		</if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    delete from bs_standerpower
+    where typeid = #{typeid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    insert into bs_standerpower (id, setword, cansetword, 
+      name, typename, typeid, status,typecode
+      )
+    values (#{id,jdbcType=VARCHAR}, #{setword,jdbcType=INTEGER}, #{cansetword,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{typename,jdbcType=VARCHAR}, #{typeid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{typecode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="batchInsertStander" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower">
+    insert into bs_standerpower
+     (id, setword, cansetword, 
+      name, typename, typeid, status,typecode,isupdate)
+      values  
+     <foreach collection="list" item="item" index="index" separator="," > 
+      (#{item.id}, #{item.setword}, #{item.cansetword}, #{item.name},#{item.typename}, #{item.typeid}, #{item.status}, #{item.typecode}, #{item.isupdate})
+     </foreach>  
+  </insert>
+  <update id="bathupdateStanderPower" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower">  
+        <foreach collection="list" item="entity" separator=";">  
+            update bs_standerpower
+            set
+      <if test="entity.cansetword != null" >
+        cansetword = #{entity.cansetword},
+      </if>
+      <if test="entity.status != null" >
+        status = #{entity.status},
+      </if>
+       <if test="entity.name != null" >
+        name = #{entity.name},
+      </if>
+       <if test="entity.typename != null" >
+        typename = #{entity.typename},
+      </if>
+      <if test="entity.typecode != null" >
+        typecode = #{entity.typecode},
+      </if>
+      <if test="entity.isupdate != null" >
+        isupdate = #{entity.isupdate},
+      </if>
+       <if test="entity.typeid != null" >
+        typeid = #{entity.typeid}
+      </if>
+        where id = #{entity.id}  
+        </foreach>  
+    </update>
+   <!--   <update id="bathupdateStanderPower" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower">  
+   
+       update bs_standerpower
+            set cansetword = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.cansetword}
+            </foreach>
+               END, 
+               status = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.status}
+            </foreach>
+               END, 
+                name = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.name}
+            </foreach>
+             END, 
+                typename = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.typename}
+            </foreach>
+             END, 
+                typeid = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.typeid}
+            </foreach>
+             END, 
+                typecode = case id
+            <foreach collection="list" item="entity" separator=", ">  
+             when #{entity.id} then #{entity.typecode}
+            </foreach>
+               END
+        where id in 
+         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+            #{item.id}
+            </foreach> 
+    </update> --> 
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    insert into bs_standerpower
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="setword != null" >
+        setword,
+      </if>
+      <if test="cansetword != null" >
+        cansetword,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="typename != null" >
+        typename,
+      </if>
+      <if test="typeid != null" >
+        typeid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+       <if test="typecode != null" >
+        typecode,
+      </if>
+       <if test="isupdate != null" >
+        isupdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="setword != null" >
+        #{setword,jdbcType=INTEGER},
+      </if>
+      <if test="cansetword != null" >
+        #{cansetword,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null" >
+        #{typecode,jdbcType=VARCHAR},
+      </if>
+      <if test="isupdate != null" >
+        #{isupdate,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    INSERT INTO  bs_standerpower 
+  <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="setword != null" >
+        setword,
+      </if>
+      <if test="cansetword != null" >
+        cansetword,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="typename != null" >
+        typename,
+      </if>
+      <if test="typeid != null" >
+        typeid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+       <if test="typecode != null" >
+        typecode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="setword != null" >
+        #{setword,jdbcType=INTEGER},
+      </if>
+      <if test="cansetword != null" >
+        #{cansetword,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null" >
+        #{typecode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    ON DUPLICATE KEY UPDATE 
+      <if test="setword != null" >
+        setword = #{setword,jdbcType=INTEGER},
+      </if>
+      <if test="cansetword != null" >
+        cansetword = #{cansetword,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        typename = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >	
+        typeid = #{typeid,jdbcType=VARCHAR},
+      </if>
+       <if test="status != null" >
+       status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null" >
+        typecode = #{typecode,jdbcType=VARCHAR}
+      </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.StanderPower" >
+    update bs_standerpower
+    set setword = #{setword,jdbcType=INTEGER},
+      cansetword = #{cansetword,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      typename = #{typename,jdbcType=VARCHAR},
+      typeid = #{typeid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

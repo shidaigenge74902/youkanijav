@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.site.dao.SiteMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.site.model.Site" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="next_time" property="nextTime" jdbcType="TIMESTAMP" />
+    <result column="weight" property="weight" jdbcType="DOUBLE" />
+    <result column="fathersiteId" property="fathersiteid" jdbcType="VARCHAR" />
+    <result column="deep" property="deep" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="frequency" property="frequency" jdbcType="DOUBLE" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="domain" property="domain" jdbcType="VARCHAR" />
+    <result column="screening" property="screening" jdbcType="BIT" />
+    <result column="firstdomain" property="firstdomain" jdbcType="VARCHAR" />
+    <result column="seconddomain" property="seconddomain" jdbcType="VARCHAR" />
+    <result column="dcollect" property="dcollect" jdbcType="INTEGER" />
+    <result column="gcollect" property="gcollect" jdbcType="INTEGER" />
+    <result column="collectrule" property="collectrule" jdbcType="VARCHAR" />
+    <result column="targetcustomer" property="targetcustomer" jdbcType="VARCHAR" />
+    <result column="specialcollect" property="specialcollect" jdbcType="INTEGER" />
+    <result column="targetsubject" property="targetsubject" jdbcType="VARCHAR" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, url, name, update_time, count, next_time, weight, fathersiteId, deep, type, frequency, 
+    province, domain, firstdomain, seconddomain, dcollect, gcollect, collectrule, targetcustomer, specialcollect, targetsubject, keyword
+  </sql>
+    <update id="bathSite" parameterType="com.bayside.app.opinion.war.site.model.Site">  
+   
+    update bs_ordinarysite
+            set
+              province = case id
+            <foreach collection="list" item="entity" separator=" ">  
+             when #{entity.id} then #{entity.province}
+            </foreach>
+            END
+        where id in 
+         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+            #{item.id}
+          </foreach> 
+    </update>  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_ordinarysite
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectAllSite" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+      id, url, name, province, domain
+    from bs_ordinarysite
+  </select>
+    <select id="selectSiteByMain" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_ordinarysite
+    where domain = #{domain,jdbcType=VARCHAR}
+  </select>
+  <select id="selectUpdateSiteByMain" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_ordinarysite
+    where domain = #{domain,jdbcType=VARCHAR} and id!=#{id,jdbcType=VARCHAR} 
+  </select>
+  <!-- 模糊查询 -->
+   <select id="selectByTiaojian" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_ordinarysite
+    where 1=1
+     <if test="name!=null and name!='' ">
+      and name LIKE CONCAT(CONCAT('%', #{name}), '%')
+    </if>
+    <if test="url!=null and url!='' ">
+      and url LIKE CONCAT(CONCAT('%', #{url}), '%')
+    </if>
+     <if test="type!=null and type!='' ">
+      and type =#{type,jdbcType=VARCHAR}
+    </if>
+    order by update_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_ordinarysite
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    insert into bs_ordinarysite (id, url, name, 
+      update_time, count, next_time, 
+      weight, fathersiteId, deep, 
+      type, frequency, province, 
+      domain)
+    values (#{id,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{count,jdbcType=INTEGER}, #{nextTime,jdbcType=TIMESTAMP}, 
+      #{weight,jdbcType=DOUBLE}, #{fathersiteid,jdbcType=VARCHAR}, #{deep,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR}, #{frequency,jdbcType=DOUBLE}, #{province,jdbcType=VARCHAR}, 
+      #{domain,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    insert into bs_ordinarysite
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="nextTime != null" >
+        next_time,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+      <if test="fathersiteid != null" >
+        fathersiteId,
+      </if>
+      <if test="deep != null" >
+        deep,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="frequency != null" >
+        frequency,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="domain != null" >
+        domain,
+      </if>
+      <if test="screening !=null ">
+      	screening,
+      </if>
+       <if test="firstdomain !=null ">
+      	 firstdomain,
+      </if>
+       <if test="dcollect !=null ">
+      	 dcollect,
+      </if>
+      <if test="gcollect !=null ">
+      	 gcollect,
+      </if>
+      <if test="collectrule !=null ">
+      	 collectrule,
+      </if>
+      <if test="targetcustomer !=null ">
+      	 targetcustomer,
+      </if>
+      <if test="specialcollect !=null ">
+      	 specialcollect,
+      </if>
+      <if test="targetsubject !=null ">
+      	 targetsubject,
+      </if>
+      <if test="keyword !=null ">
+      	 keyword,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="nextTime != null" >
+        #{nextTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="fathersiteid != null" >
+        #{fathersiteid,jdbcType=VARCHAR},
+      </if>
+      <if test="deep != null" >
+        #{deep,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        #{frequency,jdbcType=DOUBLE},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null" >
+        #{domain,jdbcType=VARCHAR},
+      </if>
+      <if test="screening != null" >
+        #{screening,jdbcType=BIT},
+      </if>
+      <if test="firstdomain !=null" >
+      	 #{firstdomain,jdbcType=VARCHAR},
+      </if>
+       <if test="dcollect !=null" >
+      	 #{dcollect,jdbcType=INTEGER},
+      </if>
+      <if test="gcollect !=null" >
+      	 #{gcollect,jdbcType=INTEGER},
+      </if>
+      <if test="collectrule !=null" >
+      	 #{collectrule,jdbcType=VARCHAR},
+      </if>
+      <if test="targetcustomer !=null" >
+      	#{targetcustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="specialcollect !=null" >
+      	  #{specialcollect,jdbcType=INTEGER},
+      </if>
+      <if test="targetsubject !=null" >
+      	#{targetsubject,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword !=null" >
+      	 #{keyword,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertSelectiveBo" parameterType="com.bayside.app.opinion.war.site.bo.SiteBo" >
+    insert into bs_ordinarysite
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="nextTime != null and nextTime !='' " >
+        next_time,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+      <if test="fathersiteid != null" >
+        fathersiteId,
+      </if>
+      <if test="deep != null" >
+        deep,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="frequency != null" >
+        frequency,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="domain != null" >
+        domain,
+      </if>
+      <if test="screening !=null ">
+      	screening,
+      </if>
+       <if test="firstdomain !=null ">
+      	 firstdomain,
+      </if>
+      <if test="seconddomain !=null ">
+      	 seconddomain,
+      </if>
+       <if test="dcollect !=null ">
+      	 dcollect,
+      </if>
+      <if test="gcollect !=null ">
+      	 gcollect,
+      </if>
+      <if test="collectrule !=null ">
+      	 collectrule,
+      </if>
+      <if test="targetcustomer !=null ">
+      	 targetcustomer,
+      </if>
+      <if test="specialcollect !=null ">
+      	 specialcollect,
+      </if>
+      <if test="targetsubject !=null ">
+      	 targetsubject,
+      </if>
+      <if test="keyword !=null ">
+      	 keyword,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="nextTime != null and nextTime !=''">
+        #{nextTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="fathersiteid != null" >
+        #{fathersiteid,jdbcType=VARCHAR},
+      </if>
+      <if test="deep != null" >
+        #{deep,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        #{frequency,jdbcType=DOUBLE},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null" >
+        #{domain,jdbcType=VARCHAR},
+      </if>
+      <if test="screening != null" >
+        #{screening,jdbcType=BIT},
+      </if>
+      <if test="firstdomain !=null" >
+      	 #{firstdomain,jdbcType=VARCHAR},
+      </if>
+      <if test="seconddomain !=null" >
+      	 #{seconddomain,jdbcType=VARCHAR},
+      </if>
+       <if test="dcollect !=null" >
+      	 #{dcollect,jdbcType=INTEGER},
+      </if>
+      <if test="gcollect !=null" >
+      	 #{gcollect,jdbcType=INTEGER},
+      </if>
+      <if test="collectrule !=null" >
+      	 #{collectrule,jdbcType=VARCHAR},
+      </if>
+      <if test="targetcustomer !=null" >
+      	#{targetcustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="specialcollect !=null" >
+      	  #{specialcollect,jdbcType=INTEGER},
+      </if>
+      <if test="targetsubject !=null" >
+      	#{targetsubject,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword !=null" >
+      	 #{keyword,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    update bs_ordinarysite
+    <set >
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="nextTime != null and nextTime !='' " >
+        next_time = #{nextTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="fathersiteid != null" >
+        fathersiteId = #{fathersiteid,jdbcType=VARCHAR},
+      </if>
+      <if test="deep != null" >
+        deep = #{deep,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        frequency = #{frequency,jdbcType=DOUBLE},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null" >
+        domain = #{domain,jdbcType=VARCHAR},
+      </if>
+       <if test="screening != null" >
+        screening =  #{screening,jdbcType=BIT},
+      </if>
+      <if test="firstdomain !=null" >
+      	firstdomain = #{firstdomain,jdbcType=VARCHAR},
+      </if>
+       <if test="dcollect !=null" >
+      	dcollect = #{dcollect,jdbcType=INTEGER},
+      </if>
+      <if test="gcollect !=null" >
+      	gcollect = #{gcollect,jdbcType=INTEGER},
+      </if>
+      <if test="collectrule !=null" >
+      	collectrule = #{collectrule,jdbcType=VARCHAR},
+      </if>
+      <if test="targetcustomer !=null" >
+      	targetcustomer = #{targetcustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="specialcollect !=null" >
+      	 specialcollect = #{specialcollect,jdbcType=INTEGER},
+      </if>
+      <if test="targetsubject !=null" >
+      	targetsubject = #{targetsubject,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword !=null" >
+      	keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+   <update id="updateByPrimaryKeySelectiveBo" parameterType="com.bayside.app.opinion.war.site.bo.SiteBo" >
+    update bs_ordinarysite
+    <set>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="nextTime != null and nextTime !=''" >
+        next_time = #{nextTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="fathersiteid != null" >
+        fathersiteId = #{fathersiteid,jdbcType=VARCHAR},
+      </if>
+      <if test="deep != null" >
+        deep = #{deep,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        frequency = #{frequency,jdbcType=DOUBLE},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null" >
+        domain = #{domain,jdbcType=VARCHAR},
+      </if>
+       <if test="screening != null" >
+        screening =  #{screening,jdbcType=BIT},
+      </if>
+       <if test="firstdomain !=null" >
+      	firstdomain = #{firstdomain,jdbcType=VARCHAR},
+      </if>
+      <if test="seconddomain !=null" >
+      	seconddomain = #{seconddomain,jdbcType=VARCHAR},
+      </if>
+       <if test="dcollect !=null" >
+      	dcollect = #{dcollect,jdbcType=INTEGER},
+      </if>
+      <if test="gcollect !=null" >
+      	gcollect = #{gcollect,jdbcType=INTEGER},
+      </if>
+      <if test="collectrule !=null" >
+      	collectrule = #{collectrule,jdbcType=VARCHAR},
+      </if>
+      <if test="targetcustomer !=null" >
+      	targetcustomer = #{targetcustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="specialcollect !=null" >
+      	 specialcollect = #{specialcollect,jdbcType=INTEGER},
+      </if>
+      <if test="targetsubject !=null" >
+      	targetsubject = #{targetsubject,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword !=null" >
+      	keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.site.model.Site" >
+    update bs_ordinarysite
+    set url = #{url,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      count = #{count,jdbcType=INTEGER},
+      next_time = #{nextTime,jdbcType=TIMESTAMP},
+      weight = #{weight,jdbcType=DOUBLE},
+      fathersiteId = #{fathersiteid,jdbcType=VARCHAR},
+      deep = #{deep,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      frequency = #{frequency,jdbcType=DOUBLE},
+      province = #{province,jdbcType=VARCHAR},
+      domain = #{domain,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectsiteBydomain" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	SELECT * FROM bs_ordinarysite WHERE domain= #{domain}
+  </select>
+</mapper>

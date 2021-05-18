@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.manager.deployment.dao.ServerManageMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.manager.deployment.model.ServerManage" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="outip" property="outip" jdbcType="VARCHAR" />
+    <result column="inip" property="inip" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="collect" property="collect" jdbcType="VARCHAR" />
+    <result column="serverCollect" property="serverCollect" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, outip, inip, name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_server_manage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bs_server_manage
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.manager.deployment.model.ServerManage" >
+    insert into bs_server_manage (id, outip, inip, 
+      name)
+    values (#{id,jdbcType=INTEGER}, #{outip,jdbcType=VARCHAR}, #{inip,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.manager.deployment.model.ServerManage" >
+    insert into bs_server_manage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="outip != null" >
+        outip,
+      </if>
+      <if test="inip != null" >
+        inip,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="outip != null" >
+        #{outip,jdbcType=VARCHAR},
+      </if>
+      <if test="inip != null" >
+        #{inip,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.manager.deployment.model.ServerManage" >
+    update bs_server_manage
+    <set >
+      <if test="outip != null" >
+        outip = #{outip,jdbcType=VARCHAR},
+      </if>
+      <if test="inip != null" >
+        inip = #{inip,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.manager.deployment.model.ServerManage" >
+    update bs_server_manage
+    set outip = #{outip,jdbcType=VARCHAR},
+      inip = #{inip,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll"  resultMap="BaseResultMap">
+  		 select 
+    <include refid="Base_Column_List" />
+    from bs_server_manage
+  </select>
+  <select id="selectCollect" resultMap="BaseResultMap">
+  	SELECT b.*,t2.collect serverCollect FROM bs_server_manage b 
+	LEFT JOIN(
+	SELECT ip,GROUP_CONCAT(process_name,":",process_num) collect FROM (
+	SELECT ip,process_name,COUNT(1)process_num FROM (
+	SELECT ip,pid,MAX(kafka_time) maxtime,process_name FROM bs_deploy_warn GROUP BY ip,pid
+	)t WHERE maxtime >= DATE_ADD(NOW(),INTERVAL -20 MINUTE) GROUP BY ip,process_name
+	)t1 GROUP BY ip
+	)t2 ON b.outip=t2.ip OR b.inip = t2.ip
+	ORDER BY b.id
+  </select>
+</mapper>

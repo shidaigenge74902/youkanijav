@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.manager.hanlp.dao.HanlpWordMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="word_name" property="wordName" jdbcType="VARCHAR" />
+    <result column="trade_id" property="tradeId" jdbcType="VARCHAR" />
+    <result column="trade_name" property="tradeName" jdbcType="VARCHAR" />
+    <result column="nominal" property="nominal" jdbcType="VARCHAR" />
+    <result column="nominal_name" property="nominalName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, word_name, trade_id, trade_name, nominal,nominal_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_hanlp_word
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_hanlp_word
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" >
+    insert into bs_hanlp_word (id, word_name, trade_id, 
+      trade_name, nominal,nominal_name)
+    values (#{id,jdbcType=VARCHAR}, #{wordName,jdbcType=VARCHAR}, #{tradeId,jdbcType=VARCHAR}, 
+      #{tradeName,jdbcType=VARCHAR}, #{nominal,jdbcType=VARCHAR}, #{nominalName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" >
+    insert into bs_hanlp_word
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wordName != null" >
+        word_name,
+      </if>
+      <if test="tradeId != null" >
+        trade_id,
+      </if>
+      <if test="tradeName != null" >
+        trade_name,
+      </if>
+      <if test="nominal != null" >
+        nominal,
+      </if>
+      <if test="nominalName != null" >
+        nominal_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="wordName != null" >
+        #{wordName,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeId != null" >
+        #{tradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeName != null" >
+        #{tradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="nominal != null" >
+        #{nominal,jdbcType=VARCHAR},
+      </if>
+      <if test="nominalName != null" >
+        #{nominalName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" >
+    update bs_hanlp_word
+    <set >
+      <if test="wordName != null" >
+        word_name = #{wordName,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeId != null" >
+        trade_id = #{tradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeName != null" >
+        trade_name = #{tradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="nominal != null" >
+        nominal = #{nominal,jdbcType=VARCHAR},
+      </if>
+      <if test="nominalName != null" >
+        nominal_name = #{nominalName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" >
+    update bs_hanlp_word
+    set word_name = #{wordName,jdbcType=VARCHAR},
+      trade_id = #{tradeId,jdbcType=VARCHAR},
+      trade_name = #{tradeName,jdbcType=VARCHAR},
+      nominal = #{nominal,jdbcType=VARCHAR},
+      nominal_name = #{nominalName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectBySelective" parameterType="com.bayside.app.opinion.manager.hanlp.model.HanlpWord" resultMap="BaseResultMap">
+  	   select 
+    <include refid="Base_Column_List" />
+    from bs_hanlp_word
+    <where>
+    	<if test="wordName!=null">
+    		instr(word_name,#{wordName,jdbcType=VARCHAR})>0
+    	</if>
+    </where>
+  </select>
+</mapper>

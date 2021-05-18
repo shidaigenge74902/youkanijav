@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.myuser.dao.ReMoneyMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.myuser.model.ReMoney" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="remoney" property="remoney" jdbcType="INTEGER" />
+    <result column="expirtime" property="expirtime" jdbcType="TIMESTAMP" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="operatetime" property="operatetime" jdbcType="TIMESTAMP" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="managerid" property="managerid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, remoney, expirtime, userid, operatetime, operator,managerid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_remoney
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByExpirtime" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ReMoney">
+     select 
+     <include refid="Base_Column_List" />
+     from bs_remoney
+    where userid = #{userid,jdbcType=VARCHAR} and expirtime &gt;= NOW()
+  </select>
+   <select id="selectPayUser" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ReMoney">
+     select 
+     count(id) yacount,Date(operatetime) operatetime
+     from bs_remoney
+    where 1=1
+     <if test="startTime!=null and startTime!=''">
+           and Date(operatetime) &gt;=#{startTime,jdbcType=TIMESTAMP}
+      </if>    
+      <if test="endTime!=null and endTime!=''">
+          and Date(operatetime) &lt;=#{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="managerid!=null and managerid!=''">
+         and managerid = #{managerid,jdbcType=VARCHAR}
+      </if>
+      group by operatetime
+  </select>
+   <select id="succAddress" resultMap="BaseResultMap">
+    select count(id) idNum from bs_remoney
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_remoney
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.myuser.model.ReMoney">
+    insert into bs_remoney (id, remoney, expirtime, 
+      userid, operatetime, operator
+      )
+    values (#{id,jdbcType=VARCHAR}, #{remoney,jdbcType=INTEGER}, #{expirtime,jdbcType=TIMESTAMP}, 
+      #{userid,jdbcType=VARCHAR}, #{operatetime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.myuser.bo.ReMoneyBo" >
+    insert into bs_remoney
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="remoney != null" >
+        remoney,
+      </if>
+      <if test="expirtime != null" >
+        expirtime,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="operatetime != null" >
+        operatetime,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="managerid != null" >
+        managerid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="remoney != null" >
+        #{remoney,jdbcType=INTEGER},
+      </if>
+      <if test="expirtime != null" >
+        #{expirtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="operatetime != null" >
+        #{operatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="managerid != null" >
+        #{managerid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.myuser.bo.ReMoneyBo" >
+    update bs_remoney
+    <set >
+      <if test="remoney != null" >
+        remoney = #{remoney,jdbcType=INTEGER},
+      </if>
+      <if test="expirtime != null" >
+        expirtime = #{expirtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="operatetime != null" >
+        operatetime = #{operatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+       <if test="managerid != null" >
+        managerid = #{managerid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=VARCHAR} and expirtime &gt;= NOW()
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.ReMoney" >
+    update bs_remoney
+    set remoney = #{remoney,jdbcType=INTEGER},
+      expirtime = #{expirtime,jdbcType=TIMESTAMP},
+      userid = #{userid,jdbcType=VARCHAR},
+      operatetime = #{operatetime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

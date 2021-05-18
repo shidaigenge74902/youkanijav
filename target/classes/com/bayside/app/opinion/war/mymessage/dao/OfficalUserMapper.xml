@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.mymessage.dao.OfficalUserMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.mymessage.model.OfficalUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="trade" property="trade" jdbcType="VARCHAR" />
+    <result column="beizhu" property="beizhu" jdbcType="VARCHAR" />
+    <result column="registerTime" property="registertime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company, mobilephone, code, email, trade, beizhu, registerTime, name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from offical_userinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAllOffical" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.mymessage.bo.OfficalUserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from offical_userinfo
+    where 1=1
+    <if test="name!=null and name!=''">
+      and name = #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="startTime!=null and startTime!=''">
+     and Date(registerTime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+     <if test="endTime!=null and endTime!=''">
+     and Date(registerTime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+    </if>
+  </select>
+  <select id="selectByMobile" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from offical_userinfo
+    where mobilephone = #{mobilephone,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from offical_userinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.mymessage.model.OfficalUser" >
+    insert into offical_userinfo (id, company, mobilephone, 
+      code, email, trade, 
+      beizhu, registerTime)
+    values (#{id,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{trade,jdbcType=VARCHAR}, 
+      #{beizhu,jdbcType=VARCHAR}, #{registertime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.mymessage.model.OfficalUser" >
+    insert into offical_userinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="company != null" >
+        company,
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="trade != null" >
+        trade,
+      </if>
+      <if test="beizhu != null" >
+        beizhu,
+      </if>
+      <if test="registertime != null" >
+        registerTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="trade != null" >
+        #{trade,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu != null" >
+        #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="registertime != null" >
+        #{registertime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.mymessage.model.OfficalUser" >
+    update offical_userinfo
+    <set >
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="trade != null" >
+        trade = #{trade,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu != null" >
+        beizhu = #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="registertime != null" >
+        registerTime = #{registertime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.mymessage.model.OfficalUser" >
+    update offical_userinfo
+    set company = #{company,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      trade = #{trade,jdbcType=VARCHAR},
+      beizhu = #{beizhu,jdbcType=VARCHAR},
+      registerTime = #{registertime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

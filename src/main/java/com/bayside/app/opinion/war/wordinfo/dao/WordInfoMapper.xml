@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.wordinfo.dao.WordInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.wordinfo.model.WordInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="wordname" property="wordname" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="dustryid" property="dustryid" jdbcType="VARCHAR" />
+    <result column="dustryname" property="dustryname" jdbcType="VARCHAR" />
+    <result column="registertime" property="registertime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, wordname, value, dustryid, dustryname, registertime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_wordinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectAllWordInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_wordinfo
+  </select>
+  <select id="selectWordInfoByName" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.wordinfo.model.WordInfo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_wordinfo
+    where 1=1
+    <if test="wordname!=null and wordname!=''">
+      and wordname LIKE CONCAT(CONCAT('%', #{wordname}), '%')
+    </if>
+    order by registertime desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_wordinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.wordinfo.model.WordInfo" >
+    insert into bs_wordinfo (id, wordname, value
+      )
+    values (#{id,jdbcType=VARCHAR}, #{wordname,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.wordinfo.model.WordInfo" >
+    insert into bs_wordinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wordname != null" >
+        wordname,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="dustryid != null" >
+        dustryid,
+      </if>
+      <if test="dustryname != null" >
+        dustryname,
+      </if>
+       <if test="registertime != null" >
+        registertime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="wordname != null" >
+        #{wordname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=VARCHAR},
+      </if>
+       <if test="dustryid != null" >
+        #{dustryid,jdbcType=VARCHAR},
+      </if>
+      <if test="dustryname != null" >
+        #{dustryname,jdbcType=VARCHAR},
+      </if>
+            
+       <if test="registertime != null" >
+        #{registertime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.wordinfo.model.WordInfo" >
+    update bs_wordinfo
+    <set >
+      <if test="wordname != null" >
+        wordname = #{wordname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+       <if test="dustryid != null" >
+        dustryid = #{dustryid,jdbcType=VARCHAR},
+      </if>
+       <if test="dustryname != null" >
+        dustryname = #{dustryname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.wordinfo.model.WordInfo" >
+    update bs_wordinfo
+    set wordname = #{wordname,jdbcType=VARCHAR},
+      value = #{value,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

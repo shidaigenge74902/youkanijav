@@ -1,0 +1,1597 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.myuser.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.myuser.model.User" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="parentid" property="parentid" jdbcType="VARCHAR" />
+    <result column="agent" property="agent" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="ownindustry" property="ownindustry" jdbcType="VARCHAR" />
+    <result column="orgname" property="orgname" jdbcType="VARCHAR" />
+    <result column="usertype" property="usertype" jdbcType="VARCHAR" />
+    <result column="accounttype" property="accounttype" jdbcType="VARCHAR" />
+    <result column="prices" property="prices" jdbcType="DECIMAL" />
+    <result column="realname" property="realname" jdbcType="VARCHAR" />
+    <result column="idcard" property="idcard" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="family_member" property="familyMember" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="fileaddress" property="fileaddress" jdbcType="VARCHAR" />
+    <result column="companyfullname" property="companyfullname" jdbcType="VARCHAR" />
+    <result column="companyshortname" property="companyshortname" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="companycode" property="companycode" jdbcType="VARCHAR" />
+    <result column="operateruser" property="operateruser" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="endtime" property="endtime" jdbcType="DATE" />
+    <result column="maxLanMuNumber" property="maxlanmunumber" jdbcType="INTEGER" />
+    <result column="maxKeyWordNumber" property="maxkeywordnumber" jdbcType="INTEGER" />
+    <result column="beizhu" property="beizhu" jdbcType="VARCHAR" />
+    <result column="typecode" property="typecode" jdbcType="VARCHAR" />
+    <result column="authority" property="authority" jdbcType="INTEGER" />
+    <result column="subjecttimes" property="subjecttimes" jdbcType="INTEGER" />
+    <result column="microopen" property="microopen" jdbcType="INTEGER" />
+    <result column="monitortimes" property="monitortimes" jdbcType="INTEGER" />
+    <result column="warntimes" property="warntimes" jdbcType="INTEGER" />
+    <result column="persontimes" property="persontimes" jdbcType="INTEGER" />
+    <result column="expirydate" property="expirydate" jdbcType="TIMESTAMP" />
+    <result column="registertime" property="registertime" jdbcType="TIMESTAMP" />
+    <result column="cloudtimes" property="cloudtimes" jdbcType="INTEGER" />
+    <result column="childtimes" property="childtimes" jdbcType="INTEGER" />
+    <result column="usertimes" property="usertimes" jdbcType="INTEGER" />
+    <result column="managerid" property="managerid" jdbcType="VARCHAR" />
+     <result column="startdate" property="startdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <resultMap id="ResultMap" type="com.bayside.app.opinion.war.myuser.bo.UserBo" extends="BaseResultMap">
+    <result column="shiyongAcount" property="shiyongAcount" jdbcType="INTEGER" />
+    <result column="biaozhunAcount" property="biaozhunAcount" jdbcType="INTEGER" />
+    <result column="innerAcount" property="innerAcount" jdbcType="INTEGER" />
+    <result column="jinzhiAcount" property="jinzhiAcount" jdbcType="INTEGER" />
+    <result column="totalid" property="totalid" jdbcType="INTEGER" />
+    <result column="alltotalid" property="alltotalid" jdbcType="INTEGER" />
+   </resultMap>
+   
+   
+  <sql id="Base_Column_List" >
+    ID, parentid, agent, name, code, password, telephone, mobilephone, email, ownindustry, 
+    orgname, usertype, accounttype, prices, realname, idcard, image, birthday, gender, 
+    address, family_member, note, fileaddress, companyfullname, companyshortname, province, 
+    city, companycode, operateruser, status, endtime, maxLanMuNumber, maxKeyWordNumber, 
+    beizhu, authority, subjecttimes, microopen, monitortimes, warntimes, persontimes, expirydate, cloudtimes, childtimes, usertimes, registertime, managerid, startdate,typecode
+  </sql>
+  
+<!--  -->
+ <select id="selectWordSetPowerByUserId" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select user.id,user.typecode,user.managerid,user.usertype,user.expirydate expirytime,
+     user.agent,user.name,user.telephone,user.mobilephone,user.email,user.ownindustry, 
+    user.orgname,user.usertype,user.accounttype, user.idcard,
+    user.address,user.companyfullname,user.companyshortname, user.province, 
+    user.city,user.companycode, user.operateruser,user.status,t.checkdays,
+    t.subjecttimes,t.persontimes,t.keywordNum,t.monitortimes,t.warntimes,t.subjectReport,t.cloudtimes,t.dayReport,weekReport,monthReport,
+    t.modalNum,t.expirdate,t.setTrade,t.childtimes,t.microopen,t.setReport,t.isupdate,t.emphasisnum,t.loginnum,t.ismedia,t.emotionname,t.evalue
+    from (
+        SELECT userid,
+		MAX(CASE WHEN NAME='专题个数' THEN setword END) subsetword,
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjecttimes,
+		MAX(CASE WHEN NAME='人物个数' THEN setword END) personsetword,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) persontimes,
+		
+		<!-- MAX(CASE WHEN NAME='重点关注个数' THEN setword END) emphasissetword,
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasistimes,  -->
+		
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasisnum,
+		MAX(CASE WHEN NAME='关键词个数' THEN setword END) keywordsetword,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN setword END) monsetword,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) monitortimes,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN setword END) warnsetword,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) warntimes,
+		MAX(CASE WHEN NAME='专报生成次数' THEN setword END) sreportsetword,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		MAX(CASE WHEN NAME='查询天数' THEN cansetword  END) checkdays,
+		
+		MAX(CASE WHEN NAME='云搜索次数' THEN setword END) cloudsetword,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudtimes,
+		
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='有效期限' THEN cansetword  END) expirdate,
+		MAX(CASE WHEN NAME='交易开通' THEN status  END) setTrade,
+		MAX(CASE WHEN NAME='子账号个数' THEN cansetword  END) childtimes,
+		MAX(CASE WHEN NAME='登录账号个数' THEN cansetword  END) loginnum,
+		MAX(CASE WHEN NAME='微监测开通' THEN status  END) microopen,
+		MAX(CASE WHEN NAME='人工报告开通' THEN status  END) setReport,
+		MAX(CASE WHEN NAME='操作开通' THEN isupdate  END) isupdate,
+		MAX(CASE WHEN NAME='媒体开通' THEN status  END) ismedia,
+		MAX(CASE WHEN NAME='负面精确度' THEN emotionname  END) emotionname,
+		MAX(CASE WHEN NAME='负面精确度' THEN evalue  END) evalue
+		FROM bs_wordset GROUP BY userid
+      ) t inner join bs_user user on t.userid=`user`.id where t.userid=#{id,jdbcType=VARCHAR}
+ </select>
+ 
+  <select id="selectUserAndPower" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+       SELECT u.orgname,u.name,u.id,u.maxlanmunumber,u.maxkeywordnumber,u.usertype,u.registertime,u.startdate,s.userid,s.subjecttimes,s.ressubjectNum,s.resPersonNum,s.persontimes,
+		s.keywordNum,s.reskeywordNum,s.monitortimes,s.resmiroNum,s.emphasisnum,
+		s.warntimes,s.resyujingNum,s.subjectReport, s.resreportNum,
+		s.cloudtimes,s.rescloudNum,s.dayReport,s.weekReport,s.monthReport,s.modalNum,u.expirydate from bs_user u left join (
+		
+		SELECT tt.userid,tt.subsetword,tt.subjecttimes,tt.subjecttimes-tt.subsetword ressubjectNum,persontimes,personsetword, persontimes - personsetword resPersonNum,
+		keywordsetword,keywordNum,tt.keywordNum - tt.keywordsetword reskeywordNum,
+		tt.monsetword,tt.monitortimes,tt.monitortimes - tt.monsetword resmiroNum,
+		tt.warnsetword,tt.warntimes,tt.warntimes - tt.warnsetword resyujingNum,
+		tt.sreportsetword,tt.subjectReport,tt.subjectReport - tt.sreportsetword resreportNum,
+		tt.cloudsetword,tt.cloudtimes,tt.cloudtimes - tt.cloudsetword rescloudNum,
+		tt.dayReport,tt.weekReport,tt.monthReport,tt.modalNum-tt.smodalNum modalNum,tt.expirydate,
+		tt.emphasisnum
+		FROM(
+		SELECT userid,
+		MAX(CASE WHEN NAME='专题个数' THEN setword END) subsetword,
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjecttimes,
+		MAX(CASE WHEN NAME='人物个数' THEN setword END) personsetword,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) persontimes,
+		
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasisnum,
+		
+		MAX(CASE WHEN NAME='关键词个数' THEN setword END) keywordsetword,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN setword END) monsetword,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) monitortimes,
+		
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN setword END) warnsetword,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) warntimes,
+		MAX(CASE WHEN NAME='专报生成次数' THEN setword END) sreportsetword,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		
+		MAX(CASE WHEN NAME='云搜索次数' THEN setword END) cloudsetword,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudtimes,
+		
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN setword  END) smodalNum,
+		MAX(CASE WHEN NAME='有效期限' THEN endtime  END) expirydate
+		FROM bs_wordset GROUP BY userid
+		)tt) s on s.userid = u.id where 1=1 
+		<if test="list!=null">
+          and u.managerid in 
+         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+          #{id} 
+        </foreach>
+       </if>
+       <if test="managerid!=null and managerid!=''">
+          and u.managerid = #{managerid,jdbcType=VARCHAR}
+       </if>
+		<if test="startTime!=null and startTime!=''">
+        and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+        </if>
+       <if test="endTime!=null and endTime!=''">
+        and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+       </if>
+       <if test="status!=null">
+         and status = #{status,jdbcType=INTEGER}
+       </if>
+        <if test="usertype!=null and usertype!=''">
+          and usertype = #{usertype,jdbcType=VARCHAR}
+        </if>
+         <if test="expirtag!=null and expirtag!=''">
+          and u.expirydate &lt; NOW()
+       </if>
+  </select>
+   <select id="selectUserAndPowerById" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+       SELECT u.orgname,u.name,u.id,u.maxlanmunumber,u.maxkeywordnumber,u.usertype,u.registertime,u.startdate,s.userid,s.subjecttimes,s.ressubjectNum,s.resPersonNum,s.persontimes,
+		s.keywordNum,s.reskeywordNum,s.monitortimes,s.resmiroNum,
+		s.warntimes,s.resyujingNum,s.subjectReport, s.resreportNum,
+		s.cloudtimes,s.rescloudNum,s.dayReport,s.weekReport,s.monthReport,s.modalNum,u.expirydate from bs_user u left join (
+		
+		SELECT tt.userid,tt.subsetword,tt.subjecttimes,tt.subjecttimes-tt.subsetword ressubjectNum,persontimes,personsetword, persontimes - personsetword resPersonNum,
+		keywordsetword,keywordNum,tt.keywordNum - tt.keywordsetword reskeywordNum,
+		tt.monsetword,tt.monitortimes,tt.monitortimes - tt.monsetword resmiroNum,
+		tt.warnsetword,tt.warntimes,tt.warntimes - tt.warnsetword resyujingNum,
+		tt.sreportsetword,tt.subjectReport,tt.subjectReport - tt.sreportsetword resreportNum,
+		tt.cloudsetword,tt.cloudtimes,tt.cloudtimes - tt.cloudsetword rescloudNum,
+		tt.dayReport,tt.weekReport,tt.monthReport,tt.modalNum-tt.smodalNum modalNum,tt.expirydate
+		FROM(
+		SELECT userid,
+		MAX(CASE WHEN NAME='专题个数' THEN setword END) subsetword,
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjecttimes,
+		MAX(CASE WHEN NAME='人物个数' THEN setword END) personsetword,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) persontimes,
+		
+		MAX(CASE WHEN NAME='关键词个数' THEN setword END) keywordsetword,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN setword END) monsetword,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) monitortimes,
+		
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN setword END) warnsetword,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) warntimes,
+		MAX(CASE WHEN NAME='专报生成次数' THEN setword END) sreportsetword,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		
+		MAX(CASE WHEN NAME='云搜索次数' THEN setword END) cloudsetword,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudtimes,
+		
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN setword  END) smodalNum,
+		MAX(CASE WHEN NAME='有效期限' THEN endtime  END) expirydate
+		FROM bs_wordset GROUP BY userid
+		)tt) s on s.userid = u.id where 1=1 
+		<if test="id!=null and id!=''">
+		   and u.id =#{id,jdbcType=VARCHAR}
+		</if>
+		
+  </select>
+  <select id="selectUserAndPowerByM" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+       SELECT u.orgname,u.maxlanmunumber,u.id,u.maxkeywordnumber,u.usertype,u.registertime,u.startdate,s.userid,s.subjecttimes,s.ressubjectNum,s.resPersonNum,s.persontimes,
+		s.keywordNum,s.reskeywordNum,s.monitortimes,s.resmiroNum,
+		s.warntimes,s.resyujingNum,s.subjectReport, s.resreportNum,
+		s.cloudtimes,s.rescloudNum,s.dayReport,s.weekReport,s.monthReport,s.modalNum,s.expirydate from bs_user u left join (
+		
+		SELECT tt.userid,tt.subsetword,tt.subjecttimes,tt.subjecttimes-tt.subsetword ressubjectNum,persontimes,personsetword, persontimes - personsetword resPersonNum,
+		keywordsetword,keywordNum,tt.keywordNum - tt.keywordsetword reskeywordNum,
+		tt.monsetword,tt.monitortimes,tt.monitortimes - tt.monsetword resmiroNum,
+		tt.warnsetword,tt.warntimes,tt.warntimes - tt.warnsetword resyujingNum,
+		tt.sreportsetword,tt.subjectReport,tt.subjectReport - tt.sreportsetword resreportNum,
+		tt.cloudsetword,tt.cloudtimes,tt.cloudtimes - tt.cloudsetword rescloudNum,
+		tt.dayReport,tt.weekReport,tt.monthReport,tt.modalNum-tt.smodalNum modalNum,tt.expirydate
+		FROM(
+		SELECT userid,
+		MAX(CASE WHEN NAME='专题个数' THEN setword END) subsetword,
+		MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjecttimes,
+		MAX(CASE WHEN NAME='人物个数' THEN setword END) personsetword,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) persontimes,
+		
+		MAX(CASE WHEN NAME='关键词个数' THEN setword END) keywordsetword,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN setword END) monsetword,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) monitortimes,
+		
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN setword END) warnsetword,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) warntimes,
+		MAX(CASE WHEN NAME='专报生成次数' THEN setword END) sreportsetword,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		
+		MAX(CASE WHEN NAME='云搜索次数' THEN setword END) cloudsetword,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudtimes,
+		
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN setword  END) smodalNum,
+		MAX(CASE WHEN NAME='有效期限' THEN endtime  END) expirydate
+		FROM bs_wordset GROUP BY userid
+		)tt) s on s.userid = u.id where 1=1 
+		
+		   and u.managerid !=''
+		
+		<if test="startTime!=null and startTime!=''">
+        and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+        </if>
+       <if test="endTime!=null and endTime!=''">
+        and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+       </if>
+       <if test="status!=null">
+         and status = #{status,jdbcType=INTEGER}
+       </if>
+        <if test="usertype!=null and usertype!=''">
+          and usertype = #{usertype,jdbcType=VARCHAR}
+        </if>
+         <if test="expirtag!=null and expirtag!=''">
+          and u.expirydate &lt; NOW()
+       </if>
+  </select>
+  <select id="selectUserTypeNumber" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+      SELECT 
+       SUM(CASE  WHEN tt.usertype!='0' AND tt.usertype!='2' and tt.usertype!='3' THEN 1 ELSE 0 END) biaozhunAcount, 
+       SUM(CASE  WHEN tt.usertype='0'  THEN 1 ELSE 0 END) shiyongAcount,
+       SUM(CASE  WHEN tt.expirydate &lt; NOW() THEN 1 ELSE 0 END) expirAcount,
+       SUM(CASE  WHEN tt.usertype='2' THEN 1 ELSE 0 END) innerAcount,
+       SUM(CASE  WHEN tt.status='0' THEN 1 ELSE 0 END) jinzhiAcount,
+       count(tt.uid) totalid,tt.managername,tt.managertag,tt.managerid
+       FROM (
+         SELECT m.id managerid,m.name managername,m.tag managertag,u.ID uid,u.usertype,u.status,u.expirydate,u.registertime FROM bs_manageruser m,bs_user u WHERE m.id = u.managerid 
+         
+       <!-- AND m.tag !=2   -->
+           <!-- <if test="managerid!=null and managerid!=''">
+            and u.managerid = #{managerid,jdbcType = VARCHAR}
+          </if> -->
+          <if test="list!=null">
+          and u.managerid in 
+         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+          #{id} 
+        </foreach>
+       </if>
+          <if test="startTime!=null and startTime!=''">
+            and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+           </if>
+          <if test="endTime!=null and endTime!=''">
+            and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+          </if>
+       )tt
+       GROUP BY tt.managerid
+  </select>
+   <select id="selectUserTypeNumberByM" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+      SELECT 
+       SUM(CASE  WHEN tt.usertype!='0' AND tt.usertype!='2' and tt.usertype!='3' THEN 1 ELSE 0 END) biaozhunAcount, 
+       SUM(CASE  WHEN tt.usertype='0'  THEN 1 ELSE 0 END) shiyongAcount,
+       SUM(CASE  WHEN tt.expirydate &lt; NOW() THEN 1 ELSE 0 END) expirAcount,
+       SUM(CASE  WHEN tt.usertype='2' THEN 1 ELSE 0 END) innerAcount,
+       SUM(CASE  WHEN tt.status='0' THEN 1 ELSE 0 END) jinzhiAcount,
+       count(tt.uid) totalid,tt.managername,tt.managertag,tt.managerid
+       FROM (
+         SELECT m.id managerid,m.name managername,m.tag managertag,u.ID uid,u.usertype,u.status,u.expirydate,u.registertime FROM bs_manageruser m,bs_user u WHERE m.id = u.managerid 
+      <!--   
+         AND m.tag !=2
+          
+            and u.managerid !='' --> 
+          <if test="list!=null">
+          and u.managerid in 
+         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+          #{id} 
+        </foreach>
+       </if>
+          <if test="startTime!=null and startTime!=''">
+            and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+           </if>
+          <if test="endTime!=null and endTime!=''">
+            and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+          </if>
+       )tt
+       GROUP BY tt.managerid
+  </select>
+   <select id="selectTotalUserTypeNumber" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    <!--   SELECT 
+       SUM(CASE  WHEN tt.usertype!='0' AND tt.usertype!='2'  THEN 1 ELSE 0 END) biaozhunAcount,
+       SUM(CASE  WHEN tt.usertype='0'  THEN 1 ELSE 0 END) shiyongAcount,
+       SUM(CASE  WHEN tt.expirydate &lt;NOW()  THEN 1 ELSE 0 END) expirAcount,
+       SUM(CASE  WHEN tt.usertype='2'  THEN 1 ELSE 0 END) innerAcount,
+       SUM(CASE  WHEN tt.status='0'  THEN 1 ELSE 0 END) jinzhiAcount,
+       count(tt.uid) totalid
+       FROM (
+         SELECT u.ID uid,u.usertype,u.status,u.expirydate,u.registertime from bs_user u where 1=1
+          <if test="startTime!=null and startTime!=''">
+            and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+           </if>
+           <if test="managerid!=null and managerid!=''">
+            and u.managerid = #{managerid,jdbcType = VARCHAR}
+          </if>
+          <if test="endTime!=null and endTime!=''">
+            and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+          </if>
+       )tt
+        -->
+        SELECT 
+       SUM(CASE  WHEN tt.usertype!='0' AND tt.usertype!='2' and tt.usertype!='3' THEN 1 ELSE 0 END) biaozhunAcount, 
+       SUM(CASE  WHEN tt.usertype='0'  THEN 1 ELSE 0 END) shiyongAcount,
+       SUM(CASE  WHEN tt.expirydate &lt; NOW() THEN 1 ELSE 0 END) expirAcount,
+       SUM(CASE  WHEN tt.usertype='2' THEN 1 ELSE 0 END) innerAcount,
+       SUM(CASE  WHEN tt.status='0' THEN 1 ELSE 0 END) jinzhiAcount,
+       count(tt.uid) totalid,tt.managername,tt.managertag,tt.managerid
+       FROM (
+         SELECT m.id managerid,m.name managername,m.tag managertag,u.ID uid,u.usertype,u.status,u.expirydate,u.registertime FROM bs_manageruser m,bs_user u WHERE m.id = u.managerid 
+           <!-- AND m.tag !=2  -->
+          <!--  <if test="managerid!=null and managerid!=''">
+            and u.managerid = #{managerid,jdbcType = VARCHAR}
+           </if> -->
+           <if test="list!=null ">
+              and u.managerid in 
+             <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+              #{id} 
+             </foreach>
+           </if>
+           
+          <if test="startTime!=null and startTime!=''">
+            and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+           </if>
+          <if test="endTime!=null and endTime!=''">
+            and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+          </if>
+       )tt
+       
+  </select>
+   <select id="selectTotalUserTypeNumberByM" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+      SELECT 
+       SUM(CASE  WHEN tt.usertype!='0' AND tt.usertype!='2' and tt.usertype!='3' THEN 1 ELSE 0 END) biaozhunAcount,
+       SUM(CASE  WHEN tt.usertype='0'  THEN 1 ELSE 0 END) shiyongAcount,
+       SUM(CASE  WHEN tt.expirydate &lt;NOW()  THEN 1 ELSE 0 END) expirAcount,
+       SUM(CASE  WHEN tt.usertype='2'  THEN 1 ELSE 0 END) innerAcount,
+       SUM(CASE  WHEN tt.status='0'  THEN 1 ELSE 0 END) jinzhiAcount,
+       count(tt.uid) totalid
+       FROM (
+         SELECT u.ID uid,u.usertype,u.status,u.expirydate,u.registertime from bs_user u where 1=1
+         <if test="list!=null ">
+              and u.managerid in 
+             <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+              #{id} 
+             </foreach>
+           </if>
+          <if test="startTime!=null and startTime!=''">
+            and DATE(u.registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+           </if>
+           
+            <!-- and u.managerid !='' -->
+          
+          <if test="endTime!=null and endTime!=''">
+            and DATE(u.registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+          </if>
+       )tt
+  </select>
+   <select id="selectUserType" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    IFNULL(MAX(CASE t.usertype WHEN '试用类型' THEN t.usertypenumber ELSE 0 END),0) shiyongAcount,
+    IFNULL(MAX(CASE t.usertype WHEN '标准用户' THEN t.usertypenumber ELSE 0 END),0) biaozhunAcount, 
+    IFNULL(MAX(CASE t.usertype WHEN '内部用户' THEN t.usertypenumber ELSE 0 END),0) innerAcount
+    from (select count(usertype) usertypenumber,usertype from bs_user where 1=1 and status!='0'
+      <if test="managerid!=null and managerid!=''">
+        and managerid = #{managerid,jdbcType = VARCHAR}
+      </if>
+      <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      group by usertype) t
+   </select>
+    <select id="selectUserStatus" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    IFNULL(MAX(CASE t.status WHEN '0' THEN t.statusnumber ELSE 0 END),0) jinzhiAcount
+    from (select count(status) statusnumber,status from bs_user where 1=1
+      <if test="managerid!=null and managerid!=''">
+        and managerid = #{managerid,jdbcType = VARCHAR}
+      </if>
+      <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      group by status) t
+   </select>
+    <select id="selectExpirUser" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+      select count(id) expirAcount from bs_user where 1=1 and expirydate &lt; NOW() 
+      <if test="managerid!=null and managerid!=''">
+        and managerid = #{managerid,jdbcType = VARCHAR}
+      </if>
+      <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+      </if>
+   </select>
+   <select id="selectTotalNumber" resultMap="ResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select count(id) totalid from bs_user 
+       where 1=1
+      <if test="managerid!=null and managerid!=''">
+         and managerid = #{managerid,jdbcType = VARCHAR}
+      </if>
+      <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+      </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectAllUser" resultMap="BaseResultMap">
+    select 
+    id,orgname
+    from bs_user
+    where status='1'
+  </select>
+   <select id="selectByOrgName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where orgname = #{orgname,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByReport" resultMap="BaseResultMap">
+   select u.id,u.orgname from bs_user as u left join (
+   SELECT userid,MAX(CASE WHEN NAME='人工报告开通' THEN status  END) renReport
+   FROM bs_wordset GROUP BY userid) as w on w.userid = u.id where w.renReport='1'
+  </select>
+   <select id="selectUserList" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where 1=1 
+      <if test="status!=null">
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="managerid!=null and managerid!=''">
+      and managerid = #{managerid,jdbcType=VARCHAR}
+    </if>
+    <if test="usertype!=null and usertype!=''">
+      and usertype = #{usertype,jdbcType=VARCHAR}
+    </if>
+     <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="expirtag!=null and expirtag!=''">
+      and expirydate &lt; NOW()
+    </if>
+  </select>
+  <select id="selectUserListByM" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where 1=1 
+
+      and managerid !=''
+    
+      <if test="status!=null">
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="usertype!=null and usertype!=''">
+      and usertype = #{usertype,jdbcType=VARCHAR}
+    </if>
+     <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="expirtag!=null and expirtag!=''">
+      and expirydate &lt; NOW()
+    </if>
+  </select>
+  <select id="selectDetailUserListByM" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where 1=1 
+   
+      and managerid !=''
+   
+    <if test="status!=null">
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="usertype!=null and usertype!=''">
+      and usertype = #{usertype,jdbcType=VARCHAR}
+    </if>
+     <if test="expirtag !=null and expirtag !=''">
+      and expirydate &lt; NOW() 
+    </if>
+     <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+     </if>
+  </select>
+ 
+   <select id="selectDetailUserList" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where 1=1 
+    <if test="managerid!=null and managerid!=''">
+      and managerid = #{managerid,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="usertype!=null and usertype!=''">
+      and usertype = #{usertype,jdbcType=VARCHAR}
+    </if>
+     <if test="expirtag !=null and expirtag !=''">
+      and expirydate &lt; NOW() 
+    </if>
+     <if test="startTime!=null and startTime!=''">
+        and DATE(registertime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="endTime!=null and endTime!=''">
+        and DATE(registertime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+     </if>
+  </select>
+  <select id="selectUserByManagerId" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+     select u.id,u.parentid,u.agent,u.name,u.code,u.password,u.mobilephone,u.email,u.ownindustry,
+	    u.orgname,u.usertype,u.address,u.note,u.fileaddress,u.companyfullname,u.companyshortname,u.province,u.city,
+	    u.companycode,u.status,u.endtime,u.maxLanMuNumber,u.maxKeyWordNumber, 
+       u.beizhu, u.authority, u.subjecttimes,u.microopen,u.monitortimes,u.warntimes,u.persontimes,u.expirydate,u.cloudtimes,u.childtimes,u.usertimes,u.registertime,u.managerid,u.startdate,u.typecode,
+       m.name as operateruser from bs_user as u left join bs_manageruser as m on u.managerid = m.id
+    where 1=1
+      <if test="list!=null">
+       and u.managerid in 
+       <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+         #{id} 
+       </foreach>
+      </if>
+        <if test="name!=null and name!='' ">
+	       and u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and u.mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">
+            and u.orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and u.usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and u.typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+         </if>
+
+         <if test ="tag != null">
+ 			and u.status != '5'	        
+         </if>
+          <if test ="sontag != null">
+ 		   and (u.parentid is null or u.parentid='')       
+         </if>
+         order by u.registertime desc
+  </select>
+  
+  <!-- 递归查询用户 -->
+   <select id="diguiByManagerId" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+     select u.id,u.parentid,u.agent,u.name,u.code,u.password,u.mobilephone,u.email,u.ownindustry,
+	    u.orgname,u.usertype,u.address,u.note,u.fileaddress,u.companyfullname,u.companyshortname,u.province,u.city,
+	    u.companycode,u.status,u.endtime,u.maxLanMuNumber,u.maxKeyWordNumber, 
+       u.beizhu, u.authority, u.subjecttimes,u.microopen,u.monitortimes,u.warntimes,u.persontimes,u.expirydate,u.cloudtimes,u.childtimes,u.usertimes,u.registertime,u.managerid,u.startdate,u.typecode,
+       m.name as operateruser from bs_user as u left join bs_manageruser as m on u.managerid = m.id
+    where u.managerid = #{managerid,jdbcType=VARCHAR}
+    
+    
+    <if test="name!=null and name!='' ">
+	       and u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and u.mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">
+            and u.orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and u.usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and u.typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+         </if>
+         order by u.registertime desc
+  </select>
+  
+  
+  <select id="selectUserByManagerIdByM" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where managerid !=''
+    <if test="name!=null and name!='' ">
+	       and name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">
+            and orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and status = #{status,jdbcType=INTEGER}
+         </if>
+         order by registertime desc
+  </select>
+  <select id="selectid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user 
+   
+  </select>
+   <select id="selectidByM" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user where managerid !=''
+  </select>
+   <select id="selectUserNameByMId" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user where 1=1 
+     <if test="list!=null">
+       and managerid in 
+       <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+         #{id} 
+       </foreach>
+      </if>
+     
+  </select>
+  <select id="selectUserNameByMIdByM" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user where managerid !=''
+  </select>
+  <select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where parentid = #{parentid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByUserType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where typecode = #{typecode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+   <select id="selectByTel" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where mobilephone = #{mobilephone,jdbcType = VARCHAR}
+  </select>
+  <select id="selectByEmail" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where email = #{email,jdbcType = VARCHAR}
+  </select>
+   <select id="selectByEndTime" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where beizhu = #{beizhu,jdbcType=VARCHAR}
+  </select>
+   <select id="selectAll" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user
+    where password = #{password,jdbcType = VARCHAR} and (name = #{name,jdbcType=VARCHAR} or mobilephone = #{name,jdbcType = VARCHAR} or
+    email = #{name,jdbcType = VARCHAR})
+  </select> 
+ 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_user
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    insert into bs_user (ID, parentid, agent, 
+      name, code, password, 
+      telephone, mobilephone, email, 
+      ownindustry, orgname, usertype, 
+      accounttype, prices, realname, 
+      idcard, image, birthday, 
+      gender, address, family_member, 
+      note, fileaddress, companyfullname, 
+      companyshortname, province, city, 
+      companycode, operateruser, status, 
+      endtime, maxLanMuNumber, maxKeyWordNumber, 
+      beizhu, authority, subjecttimes, microopen,
+      monitortimes, warntimes, persontimes, expirydate,
+      cloudtimes, childtimes, usertimes, registertime, startdate)
+    values (#{id,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{agent,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{ownindustry,jdbcType=VARCHAR}, #{orgname,jdbcType=VARCHAR}, #{usertype,jdbcType=VARCHAR}, 
+      #{accounttype,jdbcType=VARCHAR}, #{prices,jdbcType=DECIMAL}, #{realname,jdbcType=VARCHAR}, 
+      #{idcard,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{gender,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{familyMember,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{fileaddress,jdbcType=VARCHAR}, #{companyfullname,jdbcType=VARCHAR}, 
+      #{companyshortname,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{companycode,jdbcType=VARCHAR}, #{operateruser,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{endtime,jdbcType=DATE}, #{maxlanmunumber,jdbcType=INTEGER}, #{maxkeywordnumber,jdbcType=INTEGER}, 
+      #{beizhu,jdbcType=VARCHAR}, #{authority,jdbcType=INTEGER}, #{subjecttimes,jdbcType=INTEGER}, #{microopen,jdbcType=INTEGER},
+      #{monitortimes,jdbcType=INTEGER}, #{warntimes,jdbcType=INTEGER}, #{persontimes,jdbcType=INTEGER}, #{expirydate,},
+      #{cloudtimes,jdbcType=INTEGER}, #{childtimes,jdbcType=INTEGER}, #{usertimes,jdbcType=INTEGER}, #{registertime,jdbcType=TIMESTAMP}, #{startdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    insert into bs_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="parentid != null" >
+        parentid,
+      </if>
+      <if test="agent != null" >
+        agent,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="ownindustry != null" >
+        ownindustry,
+      </if>
+      <if test="orgname != null" >
+        orgname,
+      </if>
+      <if test="usertype != null" >
+        usertype,
+      </if>
+      <if test="accounttype != null" >
+        accounttype,
+      </if>
+      <if test="prices != null" >
+        prices,
+      </if>
+      <if test="realname != null" >
+        realname,
+      </if>
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="familyMember != null" >
+        family_member,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="fileaddress != null" >
+        fileaddress,
+      </if>
+      <if test="companyfullname != null" >
+        companyfullname,
+      </if>
+      <if test="companyshortname != null" >
+        companyshortname,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="companycode != null" >
+        companycode,
+      </if>
+      <if test="operateruser != null" >
+        operateruser,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+      <if test="maxlanmunumber != null" >
+        maxLanMuNumber,
+      </if>
+      <if test="maxkeywordnumber != null" >
+        maxKeyWordNumber,
+      </if>
+      <if test="beizhu != null" >
+        beizhu,
+      </if>
+      <if test="authority != null" >
+        authority,
+      </if>
+      <if test="subjecttimes != null" >
+        subjecttimes,
+      </if>
+      <if test="microopen != null" >
+        microopen,
+      </if>
+      <if test="monitortimes != null" >
+        monitortimes,
+      </if>
+      <if test="warntimes != null" >
+        warntimes,
+      </if>
+       <if test="persontimes != null" >
+        persontimes,
+      </if>
+       <if test="expirydate != null" >
+        expirydate,
+      </if>
+      <if test="cloudtimes != null" >
+        cloudtimes,
+      </if>
+      <if test="childtimes != null" >
+        childtimes,
+      </if>
+      <if test="usertimes != null" >
+        usertimes,
+      </if>
+      <if test="registertime != null" >
+        registertime,
+      </if>
+      <if test="managerid != null" >
+        managerid,
+      </if>
+      <if test="startdate != null" >
+        startdate,
+      </if>
+      <if test="typecode != null" >
+        typecode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="agent != null" >
+        #{agent,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ownindustry != null" >
+        #{ownindustry,jdbcType=VARCHAR},
+      </if>
+      <if test="orgname != null" >
+        #{orgname,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        #{usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="accounttype != null" >
+        #{accounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="prices != null" >
+        #{prices,jdbcType=DECIMAL},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="familyMember != null" >
+        #{familyMember,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="fileaddress != null" >
+        #{fileaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="companyfullname != null" >
+        #{companyfullname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyshortname != null" >
+        #{companyshortname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="companycode != null" >
+        #{companycode,jdbcType=VARCHAR},
+      </if>
+      <if test="operateruser != null" >
+        #{operateruser,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=DATE},
+      </if>
+      <if test="maxlanmunumber != null" >
+        #{maxlanmunumber,jdbcType=INTEGER},
+      </if>
+      <if test="maxkeywordnumber != null" >
+        #{maxkeywordnumber,jdbcType=INTEGER},
+      </if>
+      <if test="beizhu != null" >
+        #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="authority != null" >
+        #{authority,jdbcType=INTEGER},
+      </if>
+      <if test="subjecttimes != null" >
+        #{subjecttimes,jdbcType=INTEGER},
+      </if>
+      <if test="microopen != null" >
+        #{microopen,jdbcType=INTEGER},
+      </if>
+      <if test="monitortimes != null" >
+        #{monitortimes,jdbcType=INTEGER},
+      </if>
+      <if test="warntimes != null" >
+        #{warntimes,jdbcType=INTEGER},
+      </if>
+      <if test="persontimes != null" >
+        #{persontimes,jdbcType=INTEGER},
+      </if>
+      <if test="expirydate != null" >
+        #{expirydate,jdbcType=TIMESTAMP},
+      </if>
+       <if test="cloudtimes != null" >
+        #{cloudtimes,jdbcType=INTEGER},
+      </if>
+       <if test="childtimes != null" >
+        #{childtimes,jdbcType=INTEGER},
+      </if>
+      <if test="usertimes != null" >
+        #{usertimes,jdbcType=INTEGER},
+      </if><!-- registertime -->
+       <if test="registertime != null" >
+        #{registertime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="managerid != null" >
+        #{managerid,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+       <if test="typecode != null" >
+        #{typecode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    <set >
+      <if test="parentid != null" >
+        parentid = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="agent != null" >
+        agent = #{agent,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ownindustry != null" >
+        ownindustry = #{ownindustry,jdbcType=VARCHAR},
+      </if>
+      <if test="orgname != null" >
+        orgname = #{orgname,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        usertype = #{usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="accounttype != null" >
+        accounttype = #{accounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="prices != null" >
+        prices = #{prices,jdbcType=DECIMAL},
+      </if>
+      <if test="realname != null" >
+        realname = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="familyMember != null" >
+        family_member = #{familyMember,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="fileaddress != null" >
+        fileaddress = #{fileaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="companyfullname != null" >
+        companyfullname = #{companyfullname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyshortname != null" >
+        companyshortname = #{companyshortname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="companycode != null" >
+        companycode = #{companycode,jdbcType=VARCHAR},
+      </if>
+      <if test="operateruser != null" >
+        operateruser = #{operateruser,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=DATE},
+      </if>
+      <if test="maxlanmunumber != null" >
+        maxLanMuNumber = #{maxlanmunumber,jdbcType=INTEGER},
+      </if>
+      <if test="maxkeywordnumber != null" >
+        maxKeyWordNumber = #{maxkeywordnumber,jdbcType=INTEGER},
+      </if>
+      <if test="beizhu != null" >
+        beizhu = #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="authority != null" >
+        authority = #{authority,jdbcType=INTEGER},
+      </if>
+      <if test="subjecttimes != null" >
+        subjecttimes = #{subjecttimes,jdbcType=INTEGER},
+      </if>
+      <if test="microopen != null" >
+        microopen = #{microopen,jdbcType=INTEGER},
+      </if>
+      <if test="monitortimes != null" >
+        monitortimes = #{monitortimes,jdbcType=INTEGER},
+      </if>
+      <if test="warntimes != null" >
+        warntimes = #{warntimes,jdbcType=INTEGER},
+      </if>
+      <if test="persontimes != null" >
+        persontimes = #{persontimes,jdbcType=INTEGER},
+      </if>
+      <if test="cloudtimes != null" >
+        cloudtimes = #{cloudtimes,jdbcType=INTEGER},
+      </if>
+      <if test="childtimes != null" >
+        childtimes = #{childtimes,jdbcType=INTEGER},
+      </if>
+      <if test="usertimes != null" >
+        usertimes = #{usertimes,jdbcType=INTEGER},
+      </if>
+      <if test="typecode != null" >
+        typecode = #{typecode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+       1=1
+	   <if test="id !=null and id!='' ">
+	     and ID = #{id,jdbcType=VARCHAR}
+	    </if>
+	    <if test="name !=null and name !=''">
+	       and name = #{name,jdbcType=VARCHAR}
+	    </if>
+	    <if test="mobilephone != null and mobilephone!=''" >
+           and mobilephone = #{mobilephone,jdbcType=VARCHAR}
+      </if>
+      <if test="parentid != null" >
+        and parentid = #{parentid,jdbcType=VARCHAR}
+      </if>
+  </update>
+   <update id="updateUserInfo" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="mobilephone != null" >
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ownindustry != null" >
+        ownindustry = #{ownindustry,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="fileaddress != null" >
+        fileaddress = #{fileaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="companyfullname != null" >
+        companyfullname = #{companyfullname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyshortname != null" >
+        companyshortname = #{companyshortname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="companycode != null" >
+        companycode = #{companycode,jdbcType=VARCHAR},
+      </if>
+     
+    </set>
+    where
+	     ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="registerUserInfo" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ownindustry != null" >
+        ownindustry = #{ownindustry,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="fileaddress != null" >
+        fileaddress = #{fileaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="companyfullname != null" >
+        companyfullname = #{companyfullname,jdbcType=VARCHAR},
+      </if>
+      <if test="companyshortname != null" >
+        companyshortname = #{companyshortname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="companycode != null" >
+        companycode = #{companycode,jdbcType=VARCHAR},
+      </if>
+     <if test="typecode != null" >
+        typecode = #{typecode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+	     ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    set parentid = #{parentid,jdbcType=VARCHAR},
+      agent = #{agent,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      ownindustry = #{ownindustry,jdbcType=VARCHAR},
+      orgname = #{orgname,jdbcType=VARCHAR},
+      usertype = #{usertype,jdbcType=VARCHAR},
+      accounttype = #{accounttype,jdbcType=VARCHAR},
+      prices = #{prices,jdbcType=DECIMAL},
+      realname = #{realname,jdbcType=VARCHAR},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      gender = #{gender,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      family_member = #{familyMember,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      fileaddress = #{fileaddress,jdbcType=VARCHAR},
+      companyfullname = #{companyfullname,jdbcType=VARCHAR},
+      companyshortname = #{companyshortname,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      companycode = #{companycode,jdbcType=VARCHAR},
+      operateruser = #{operateruser,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      endtime = #{endtime,jdbcType=DATE},
+      maxLanMuNumber = #{maxlanmunumber,jdbcType=INTEGER},
+      maxKeyWordNumber = #{maxkeywordnumber,jdbcType=INTEGER},
+      beizhu = #{beizhu,jdbcType=VARCHAR},
+      authority = #{authority,jdbcType=INTEGER},
+      subjecttimes = #{subjecttimes,jdbcType=INTEGER},
+      microopen = #{microopen,jdbcType=INTEGER},
+      monitortimes = #{monitortimes,jdbcType=INTEGER},
+      warntimes = #{warntimes,jdbcType=INTEGER},
+      persontimes = #{persontimes,jdbcType=INTEGER},
+      expirydate = #{expirydate,jdbcType=TIMESTAMP},
+      cloudtimes = #{cloudtimes,jdbcType=INTEGER},
+      childtimes = #{childtimes,jdbcType=INTEGER},
+      usertimes = #{usertimes,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <update id="updatePassword" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    set 
+      password = #{password,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <update id="updateUserStatus" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    set 
+      status = #{status,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateUserShen" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    set 
+      <if test="startdate!=null">
+       startdate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expirydate!=null">
+         expirydate = #{expirydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="password!=null and password!=''">
+          password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype!=null and usertype!=''">
+          usertype = #{usertype,jdbcType=VARCHAR},
+      </if>
+     <if test="typecode!=null and typecode!=''">
+         typecode = #{typecode,jdbcType=VARCHAR},
+     </if>
+      status = #{status,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateUserAttr" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+    update bs_user
+    set 
+      <if test="managerid !=null and managerid !='' ">
+         managerid = #{managerid,jdbcType=VARCHAR},
+      </if>
+       <if test="typecode !=null and typecode !='' ">
+         typecode = #{typecode,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype !=null and usertype !='' ">
+          usertype = #{usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="expirydate!=null">
+         expirydate = #{expirydate,jdbcType=TIMESTAMP}
+      </if>
+       where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 验证用户登陆 -->
+	<select id="countUser" parameterType="com.bayside.app.opinion.war.myuser.model.User" resultType="int">
+	    select count(*) from bs_user where 
+	    name=#{name} and password=#{password}
+	</select>
+	
+	<!-- 根据用户名查出userId -->
+	<select id="queryUserName" parameterType="String" resultMap="BaseResultMap">
+	  select
+	  <include refid="Base_Column_List" />
+	  from bs_user where name=#{name}
+	</select>
+	<select id="selectAllagent" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.User" >
+     select 
+     <include refid="Base_Column_List" />
+      from bs_user
+     where parentid = #{parentid,jdbcType = VARCHAR} and usertype = #{usertype,jdbcType = VARCHAR} 
+  </select>
+  <!-- param.setUsername("%CD%");
+      param.setPassword("%11%");
+
+	<select  id="selectPersons" resultType="person" parameterType="person">
+		select id,sex,age,username,password from person where true 
+			<if test="username!=null"> AND username LIKE #{username}</if>
+			<if test="password!=null">AND password LIKE #{password}</if>
+	
+	</select> -->
+	
+	<!-- 修改客户销售员 -->
+	<select id="selectUserById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT u.id,u.name,u.managerid,u.typecode,m.name AS operateruser 
+			FROM bs_user AS u LEFT JOIN bs_manageruser AS m ON u.managerid = m.id WHERE 1=1
+			AND u.id = #{id,jdbcType=VARCHAR}
+	</select>
+	<update id="updateUserById" parameterType="com.bayside.app.opinion.war.myuser.model.User">
+		UPDATE bs_user SET
+      		managerid = #{managerid,jdbcType=VARCHAR}
+   			WHERE id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	
+  	<select id="selectuserInfo" parameterType="com.bayside.app.opinion.war.myuser.model.User" resultMap="BaseResultMap">
+	    select u.id,u.parentid,u.agent,u.name,u.code,u.password,u.mobilephone,u.email,u.ownindustry,
+	    u.orgname,u.usertype,u.address,u.note,u.fileaddress,u.companyfullname,u.companyshortname,u.province,u.city,
+	    u.companycode,u.status,u.endtime,u.maxLanMuNumber,u.maxKeyWordNumber, 
+       u.beizhu, u.authority, u.subjecttimes,u.microopen,u.monitortimes,u.warntimes,u.persontimes,u.expirydate,u.cloudtimes,u.childtimes,u.usertimes,u.registertime,u.managerid,u.startdate,u.typecode,
+       m.name as operateruser from bs_user as u left join bs_manageruser as m on u.managerid = m.id where 1=1
+	    <if test="name!=null and name!='' ">
+	       and u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and u.mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">                    
+            and u.orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and u.usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and u.typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+         </if>
+
+          <if test="tag!=null">
+            and u.status !='5' 
+         </if>
+         <if test="sontag!=null">
+            and (u.parentid is null or u.parentid ='') 
+         </if>
+         <!-- <if test="choseExir!=null and choseExir!=''">
+             and DATE(expirydate)&gt;NOW()
+         </if> -->
+        
+         order by u.registertime desc 
+	</select>
+	<select id="selectuserInfoByM" parameterType="com.bayside.app.opinion.war.myuser.model.User" resultMap="BaseResultMap">
+	      select u.id,u.parentid,u.agent,u.name,u.code,u.password,u.mobilephone,u.email,u.ownindustry,
+	    u.orgname,u.usertype,u.address,u.note,u.fileaddress,u.companyfullname,u.companyshortname,u.province,u.city,
+	    u.companycode,u.status,u.endtime,u.maxLanMuNumber,u.maxKeyWordNumber, 
+       u.beizhu, u.authority, u.subjecttimes,u.microopen,u.monitortimes,u.warntimes,u.persontimes,u.expirydate,u.cloudtimes,u.childtimes,u.usertimes,u.registertime,u.managerid,u.startdate,u.typecode,
+       m.name as operateruser from bs_user as u left join bs_manageruser as m on u.managerid = m.id
+	    
+	    where 1=1 and managerid!=''
+	    <if test="name!=null and name!='' ">
+	       and u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and u.mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">
+            and u.orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and u.usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and u.typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+         </if>
+         order by u.registertime desc 
+	</select>
+  <!-- 查询所有的父级用户 -->
+  <select id="selectParentUser" resultMap="BaseResultMap">
+  	SELECT 
+  	<include refid="Base_Column_List" />
+  	FROM BS_USER	
+  	WHERE PARENTID IS NULL
+  </select>
+  
+  <select id="selectuserInfoMaintainAdministrator" parameterType="com.bayside.app.opinion.war.myuser.model.User" resultMap="BaseResultMap">
+	    select u.id,u.parentid,u.agent,u.name,u.code,u.password,u.mobilephone,u.email,u.ownindustry,
+	    u.orgname,u.usertype,u.address,u.note,u.fileaddress,u.companyfullname,u.companyshortname,u.province,u.city,
+	    u.companycode,u.status,u.endtime,u.maxLanMuNumber,u.maxKeyWordNumber, 
+       u.beizhu, u.authority, u.subjecttimes,u.microopen,u.monitortimes,u.warntimes,u.persontimes,u.expirydate,u.cloudtimes,u.childtimes,u.usertimes,u.registertime,u.managerid,u.startdate,u.typecode,
+       m.name as operateruser from bs_user as u left join bs_manageruser as m on u.managerid = m.id left join bs_user_type as t on u.typecode = t.typecode where t.typename &lt;&gt; '1'
+	    <if test="name!=null and name!='' ">
+	       and u.name LIKE CONCAT(CONCAT('%', #{name}), '%')
+	    </if>
+	     <if test="mobilephone!=null and mobilephone!='' ">
+	       and u.mobilephone LIKE CONCAT(CONCAT('%', #{mobilephone}), '%')
+	    </if>
+         <if test="orgname!=null and orgname!='' ">                    
+            and u.orgname LIKE CONCAT(CONCAT('%', #{orgname}), '%')
+         </if>
+         <if test="usertype!=null and usertype!='' ">
+           and u.usertype = #{usertype,jdbcType=VARCHAR}
+         </if>
+          <if test="typecode!=null and typecode!='' ">
+           and u.typecode = #{typecode,jdbcType=VARCHAR}
+         </if>
+         <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+         </if>
+
+          <if test="tag!=null">
+            and u.status !='5' 
+         </if>
+         <if test="sontag!=null">
+            and (u.parentid is null or u.parentid ='') 
+         </if>
+         order by u.registertime desc 
+	</select>
+</mapper>

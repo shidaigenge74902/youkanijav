@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.visitcustomer.dao.VisitCustomerMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="companyname" property="companyname" jdbcType="VARCHAR" />
+    <result column="contactuser" property="contactuser" jdbcType="VARCHAR" />
+    <result column="companyphone" property="companyphone" jdbcType="VARCHAR" />
+    <result column="companyaddress" property="companyaddress" jdbcType="VARCHAR" />
+    <result column="personmobilephone" property="personmobilephone" jdbcType="VARCHAR" />
+    <result column="projecttype" property="projecttype" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="visitStartTime" property="visitstarttime" jdbcType="TIMESTAMP" />
+    <result column="visitEndTime" property="visitendtime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="managername" property="managername" jdbcType="VARCHAR" />
+    <result column="managerid" property="managerid" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="zhiwu" property="zhiwu" jdbcType="VARCHAR" />
+    <result column="beizhu" property="beizhu" jdbcType="VARCHAR" />
+    <result column="operatorTime" property="operatorTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, companyname, contactuser, companyphone, companyaddress, personmobilephone, projecttype, 
+    province, city, visitStartTime, visitEndTime, content, managername, managerid, status, operatorTime
+    zhiwu, beizhu
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_visitcustomer
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectTodayStatusNumber" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer" >
+    select 
+     IFNULL(MAX(CASE t.status WHEN '0' THEN t.statusNum ELSE 0 END),0) noacount,
+     IFNULL(MAX(CASE t.status WHEN '1' THEN t.statusNum ELSE 0 END),0) yacount,
+     IFNULL(MAX(CASE t.status WHEN '2' THEN t.statusNum ELSE 0 END),0) jacount
+     FROM 
+    (select status,count(status) statusNum from bs_visitcustomer 
+     where Date(visitStartTime) = DATE(NOW()) 
+     <if test="managerid!=null and managerid!=''">
+      and managerid = #{managerid,jdbcType=VARCHAR}
+     </if>
+    group by status) t
+  </select>
+  
+  <select id="selectTodayJihua" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer" >
+     select count(v.id) addNum from bs_visitcustomer v where 1=1
+      <if test="managerid!=null and managerid!=''">
+      and managerid = #{managerid,jdbcType=VARCHAR}
+     </if>
+     and Date(operatorTime) = DATE(NOW())
+  </select>
+     <select id="selectVisByTime" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.visitcustomer.bo.VisitCustomerBo" >
+     select 
+     IFNULL(MAX(CASE t.status WHEN '0' THEN t.statusNum ELSE 0 END),0) noacount,
+     IFNULL(MAX(CASE t.status WHEN '1' THEN t.statusNum ELSE 0 END),0) yacount,
+     IFNULL(MAX(CASE t.status WHEN '2' THEN t.statusNum ELSE 0 END),0) jacount,
+    DATE(t.visitStartTime) visitStartTime
+     FROM 
+    (select status,count(status) statusNum, visitStartTime from bs_visitcustomer 
+     where 1=1
+      <if test="startTime!=null and startTime!=''">
+           and Date(visitStartTime) &gt;=#{startTime,jdbcType=TIMESTAMP}
+      </if>    
+      <if test="endTime!=null and endTime!=''">
+          and Date(visitStartTime) &lt;=#{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="managerid!=null and managerid!=''">
+         and managerid = #{managerid,jdbcType=VARCHAR}
+      </if>
+    group by status,visitStartTime) t group by DATE(t.visitStartTime)
+  </select>
+  <select id="selectVisCountByTime" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.visitcustomer.bo.VisitCustomerBo" >
+      select count(v.id) addNum,Date(v.operatorTime) operatorTime from bs_visitcustomer v where 
+      1=1
+      <if test="startTime!=null and startTime!=''">
+          and DATE(v.operatorTime) &gt;=#{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime!=null and endTime!=''">
+          and DATE(v.operatorTime) &lt;=#{endTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="managerid!=null and managerid!=''">
+         and managerid = #{managerid,jdbcType=VARCHAR}
+      </if> 
+       group by Date(v.operatorTime)
+  </select>
+   <select id="selectAllVisitCustomer" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer"  >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_visitcustomer
+    where 1=1 
+    <if test="status!=null">
+     and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="contactuser!=null and contactuser!='' ">
+      and contactuser LIKE CONCAT(CONCAT('%', #{contactuser}), '%')
+    </if>
+      <if test="list!=null">
+          and managerid in 
+         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+          #{id} 
+        </foreach>
+       </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_visitcustomer
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer" >
+    insert into bs_visitcustomer (id, companyname, contactuser, 
+      companyphone, companyaddress, personmobilephone, 
+      projecttype, province, city, 
+      visitStartTime, visitEndTime, content, 
+      managername, managerid, status, 
+      zhiwu, beizhu)
+    values (#{id,jdbcType=VARCHAR}, #{companyname,jdbcType=VARCHAR}, #{contactuser,jdbcType=VARCHAR}, 
+      #{companyphone,jdbcType=VARCHAR}, #{companyaddress,jdbcType=VARCHAR}, #{personmobilephone,jdbcType=VARCHAR}, 
+      #{projecttype,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{visitstarttime,jdbcType=TIMESTAMP}, #{visitendtime,jdbcType=TIMESTAMP}, #{content,jdbcType=VARCHAR}, 
+      #{managername,jdbcType=VARCHAR}, #{managerid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{zhiwu,jdbcType=VARCHAR}, #{beizhu,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.visitcustomer.bo.VisitCustomerBo" >
+    insert into bs_visitcustomer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyname != null" >
+        companyname,
+      </if>
+      <if test="contactuser != null" >
+        contactuser,
+      </if>
+      <if test="companyphone != null" >
+        companyphone,
+      </if>
+      <if test="companyaddress != null" >
+        companyaddress,
+      </if>
+      <if test="personmobilephone != null" >
+        personmobilephone,
+      </if>
+      <if test="projecttype != null" >
+        projecttype,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="visitstarttime != null" >
+        visitStartTime,
+      </if>
+      <if test="visitendtime != null" >
+        visitEndTime,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="managername != null" >
+        managername,
+      </if>
+      <if test="managerid != null" >
+        managerid,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="zhiwu != null" >
+        zhiwu,
+      </if>
+      <if test="beizhu != null" >
+        beizhu,
+      </if>
+        <if test="operatorTime != null" >
+        operatorTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactuser != null" >
+        #{contactuser,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphone != null" >
+        #{companyphone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyaddress != null" >
+        #{companyaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personmobilephone != null" >
+        #{personmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="projecttype != null" >
+        #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="visitstarttime != null" >
+        #{visitstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitendtime != null" >
+        #{visitendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="managername != null" >
+        #{managername,jdbcType=VARCHAR},
+      </if>
+      <if test="managerid != null" >
+        #{managerid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="zhiwu != null" >
+        #{zhiwu,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu != null" >
+        #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null" >
+        #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.visitcustomer.bo.VisitCustomerBo" >
+    update bs_visitcustomer
+    <set >
+      <if test="companyname != null" >
+        companyname = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactuser != null" >
+        contactuser = #{contactuser,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphone != null" >
+        companyphone = #{companyphone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyaddress != null" >
+        companyaddress = #{companyaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personmobilephone != null" >
+        personmobilephone = #{personmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="projecttype != null" >
+        projecttype = #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="visitstarttime != null" >
+        visitStartTime = #{visitstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitendtime != null" >
+        visitEndTime = #{visitendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="managername != null" >
+        managername = #{managername,jdbcType=VARCHAR},
+      </if>
+      <if test="managerid != null" >
+        managerid = #{managerid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="zhiwu != null" >
+        zhiwu = #{zhiwu,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu != null" >
+        beizhu = #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="visitendtime != null" >
+        visitEndTime = #{visitendtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.visitcustomer.model.VisitCustomer" >
+    update bs_visitcustomer
+    set companyname = #{companyname,jdbcType=VARCHAR},
+      contactuser = #{contactuser,jdbcType=VARCHAR},
+      companyphone = #{companyphone,jdbcType=VARCHAR},
+      companyaddress = #{companyaddress,jdbcType=VARCHAR},
+      personmobilephone = #{personmobilephone,jdbcType=VARCHAR},
+      projecttype = #{projecttype,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      visitStartTime = #{visitstarttime,jdbcType=TIMESTAMP},
+      visitEndTime = #{visitendtime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=VARCHAR},
+      managername = #{managername,jdbcType=VARCHAR},
+      managerid = #{managerid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      zhiwu = #{zhiwu,jdbcType=VARCHAR},
+      beizhu = #{beizhu,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

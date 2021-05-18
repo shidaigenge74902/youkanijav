@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.customerinfo.dao.CustomerInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.customerinfo.model.CustomerInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="companyname" property="companyname" jdbcType="VARCHAR" />
+    <result column="contactuser" property="contactuser" jdbcType="VARCHAR" />
+    <result column="zhiwu" property="zhiwu" jdbcType="VARCHAR" />
+    <result column="companyphone" property="companyphone" jdbcType="VARCHAR" />
+    <result column="companyaddress" property="companyaddress" jdbcType="VARCHAR" />
+    <result column="personmobilephone" property="personmobilephone" jdbcType="VARCHAR" />
+    <result column="projecttype" property="projecttype" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="fax" property="fax" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="includuser" property="includuser" jdbcType="VARCHAR" />
+    <result column="desicuser" property="desicuser" jdbcType="VARCHAR" />
+    <result column="includmobilephone" property="includmobilephone" jdbcType="VARCHAR" />
+    <result column="includphone" property="includphone" jdbcType="VARCHAR" />
+    <result column="desimobilephone" property="desimobilephone" jdbcType="VARCHAR" />
+    <result column="desiphone" property="desiphone" jdbcType="VARCHAR" />
+    <result column="managername" property="managername" jdbcType="VARCHAR" />
+    <result column="managerid" property="managerid" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="operatortime" property="operatortime" jdbcType="TIMESTAMP" />
+    <result column="beizhu" property="beizhu" jdbcType="VARCHAR" />
+    <result column="qianyuedate" property="qianyuedate" jdbcType="TIMESTAMP" />
+    <result column="visitStartTime" property="visitStartTime" jdbcType="TIMESTAMP" />
+    <result column="visitEndTime" property="visitEndTime" jdbcType="TIMESTAMP" />
+    <result column="renlingDate" property="renlingDate" jdbcType="TIMESTAMP" />
+    <result column="contractnum" property="contractnum" jdbcType="VARCHAR" />
+    <result column="contractmoney" property="contractmoney" jdbcType="DOUBLE" />
+    <result column="customerType" property="customerType" jdbcType="INTEGER" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, companyname, contactuser, zhiwu, companyphone, companyaddress, personmobilephone, 
+    projecttype, email, fax, province, city, status, includuser, desicuser, includmobilephone, 
+    includphone, desimobilephone, desiphone, managername, managerid, operator, operatortime, 
+    beizhu, qianyuedate, contractnum, contractmoney, visitStartTime, visitEndTime, renlingDate, customerType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectCustomerByTime" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+  <!--   select 
+     DATE(t.operatortime) operatortime,
+     t.idNum idNum,
+     IFNULL(MAX(CASE t.status WHEN '2' THEN t.statusNum ELSE 0 END),0) succacount
+     FROM 
+    (select count(id) idNum,status,count(status) statusNum, DATE(operatortime) operatortime from bs_customerinfo 
+     where 1=1
+          <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+    group by status,Date(operatortime)) t  group by Date(t.operatortime) -->
+    select 
+     DATE(t.operatortime) operatortime,
+     t.idNum idNum
+ 
+     FROM 
+    (select count(id) idNum,status,count(status) statusNum, DATE(operatortime) operatortime from bs_customerinfo 
+     where 1=1
+          <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+    group by status,Date(operatortime)) t group by Date(t.operatortime)
+  </select>
+  <select id="selectAddress" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo">
+    select province,count(province) provinceNum
+    from bs_customerinfo where 1=1 
+     <if test="managerid!=null and managerid!=''">
+       and managerid = #{managerid,jdbcType=VARCHAR}
+     </if>
+    group by province
+  </select>
+  <select id="succCustomerType" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+    select count(id) idNum,status from bs_customerinfo  where status='2' 
+  </select>
+   <select id="selectCustomerType" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+      select 
+     IFNULL(MAX(CASE t.customerType WHEN '0' THEN t.statusNum ELSE 0 END),0) puacount,
+     IFNULL(MAX(CASE t.customerType WHEN '1' THEN t.statusNum ELSE 0 END),0) spacount
+     FROM 
+    (select count(id) idNum,customerType,count(customerType) statusNum from bs_customerinfo 
+    where 1=1 
+    <if test="managerid!=null and managerid!=''">
+     and managerid = #{managerid,jdbcType=VARCHAR}
+    </if>
+      group by customerType) t 
+  </select>
+  
+  <select id="selectByManagerUser" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo"  >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where managerid = #{managerid,jdbcType=VARCHAR} and status = #{status,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllFilter" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where 1=1 
+     <if test="companyname!=null and companyname!='' ">
+	       and companyname LIKE CONCAT(CONCAT('%', #{companyname}), '%')
+	    </if>
+	     <if test="contactuser!=null and contactuser!='' ">
+	       and contactuser LIKE CONCAT(CONCAT('%', #{contactuser}), '%')
+	    </if>
+         <if test="companyaddress!=null and companyaddress!='' ">
+            and companyaddress LIKE CONCAT(CONCAT('%', #{companyaddress}), '%')
+         </if>
+         <if test="status!=null">
+             and status = #{status,jdbcType=INTEGER} 
+         </if>
+         <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+         order by operatortime desc
+  </select>
+  <!--总监  -->
+   <select id="allcustomer" resultMap="BaseResultMap">
+        select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+   </select>
+  <select id="zongjiancustomer" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo">
+     select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where status!='2'
+      <if test="companyname!=null and companyname!='' ">
+	       and companyname LIKE CONCAT(CONCAT('%', #{companyname}), '%')
+	    </if>
+	     <if test="contactuser!=null and contactuser!='' ">
+	       and contactuser LIKE CONCAT(CONCAT('%', #{contactuser}), '%')
+	    </if>
+         <if test="companyaddress!=null and companyaddress!='' ">
+            and companyaddress LIKE CONCAT(CONCAT('%', #{companyaddress}), '%')
+         </if>
+         <if test="status!=null">
+             and status = #{status,jdbcType=INTEGER} 
+         </if>
+         <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+  </select>
+  <select id="publiccustomer" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo">
+     select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where 1=1
+    <if test="companyname!=null and companyname!='' ">
+	       and companyname LIKE CONCAT(CONCAT('%', #{companyname}), '%')
+	    </if>
+	     <if test="contactuser!=null and contactuser!='' ">
+	       and contactuser LIKE CONCAT(CONCAT('%', #{contactuser}), '%')
+	    </if>
+         <if test="companyaddress!=null and companyaddress!='' ">
+            and companyaddress LIKE CONCAT(CONCAT('%', #{companyaddress}), '%')
+         </if>
+         <if test="status!=null">
+             and status = #{status,jdbcType=INTEGER} 
+         </if>
+         <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+         order by operatortime desc
+    </select>
+  <select id="personcustomer" resultMap="BaseResultMap" parameterType="java.lang.String">
+     select 
+    <include refid="Base_Column_List" />
+    from bs_customerinfo
+    where managerid=#{managerid,jdbcType=VARCHAR}
+    <if test="companyname!=null and companyname!='' ">
+	       and companyname LIKE CONCAT(CONCAT('%', #{companyname}), '%')
+	    </if>
+	     <if test="contactuser!=null and contactuser!='' ">
+	       and contactuser LIKE CONCAT(CONCAT('%', #{contactuser}), '%')
+	    </if>
+         <if test="companyaddress!=null and companyaddress!='' ">
+            and companyaddress LIKE CONCAT(CONCAT('%', #{companyaddress}), '%')
+         </if>
+         <if test="status!=null">
+             and status = #{status,jdbcType=INTEGER} 
+         </if>
+         <if test="startTime!=null and startTime!='' ">
+              and DATE(operatortime) &gt;= #{startTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="endTime!=null and endTime!='' ">
+              and DATE(operatortime) &lt;= #{endTime,jdbcType=TIMESTAMP}
+         </if>
+         <if test="managerid!=null and managerid!=''">
+            and managerid = #{managerid,jdbcType=VARCHAR}
+         </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_customerinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.customerinfo.model.CustomerInfo" >
+    insert into bs_customerinfo (id, companyname, contactuser, 
+      zhiwu, companyphone, companyaddress, 
+      personmobilephone, projecttype, email, 
+      fax, province, city, 
+      status, includuser, desicuser, 
+      includmobilephone, includphone, desimobilephone, 
+      desiphone, managername, managerid, 
+      operator, operatortime, beizhu, 
+      qianyuedate, contractnum, contractmoney
+      )
+    values (#{id,jdbcType=VARCHAR}, #{companyname,jdbcType=VARCHAR}, #{contactuser,jdbcType=VARCHAR}, 
+      #{zhiwu,jdbcType=VARCHAR}, #{companyphone,jdbcType=VARCHAR}, #{companyaddress,jdbcType=VARCHAR}, 
+      #{personmobilephone,jdbcType=VARCHAR}, #{projecttype,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{fax,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{includuser,jdbcType=VARCHAR}, #{desicuser,jdbcType=VARCHAR}, 
+      #{includmobilephone,jdbcType=VARCHAR}, #{includphone,jdbcType=VARCHAR}, #{desimobilephone,jdbcType=VARCHAR}, 
+      #{desiphone,jdbcType=VARCHAR}, #{managername,jdbcType=VARCHAR}, #{managerid,jdbcType=VARCHAR}, 
+      #{operator,jdbcType=VARCHAR}, #{operatortime,jdbcType=TIMESTAMP}, #{beizhu,jdbcType=VARCHAR}, 
+      #{qianyuedate,jdbcType=TIMESTAMP}, #{contractnum,jdbcType=VARCHAR}, #{contractmoney,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+    insert into bs_customerinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyname != null" >
+        companyname,
+      </if>
+      <if test="contactuser != null" >
+        contactuser,
+      </if>
+      <if test="zhiwu != null" >
+        zhiwu,
+      </if>
+      <if test="companyphone != null" >
+        companyphone,
+      </if>
+      <if test="companyaddress != null" >
+        companyaddress,
+      </if>
+      <if test="personmobilephone != null" >
+        personmobilephone,
+      </if>
+      <if test="projecttype != null" >
+        projecttype,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="fax != null" >
+        fax,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="includuser != null" >
+        includuser,
+      </if>
+      <if test="desicuser != null" >
+        desicuser,
+      </if>
+      <if test="includmobilephone != null" >
+        includmobilephone,
+      </if>
+      <if test="includphone != null" >
+        includphone,
+      </if>
+      <if test="desimobilephone != null" >
+        desimobilephone,
+      </if>
+      <if test="desiphone != null" >
+        desiphone,
+      </if>
+      <if test="managername != null" >
+        managername,
+      </if>
+      <if test="managerid != null" >
+        managerid,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="operatortime != null" >
+        operatortime,
+      </if>
+      <if test="beizhu != null" >
+        beizhu,
+      </if>
+      <if test="qianyuedate != null" >
+        qianyuedate,
+      </if>
+      <if test="contractnum != null" >
+        contractnum,
+      </if>
+      <if test="contractmoney != null" >
+        contractmoney,
+      </if>
+       <if test="visitStartTime != null" >
+        visitStartTime,
+      </if>
+       <if test="visitEndTime != null" >
+        visitEndTime,
+      </if>
+      <if test="customerType != null" >
+        customerType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactuser != null" >
+        #{contactuser,jdbcType=VARCHAR},
+      </if>
+      <if test="zhiwu != null" >
+        #{zhiwu,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphone != null" >
+        #{companyphone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyaddress != null" >
+        #{companyaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personmobilephone != null" >
+        #{personmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="projecttype != null" >
+        #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="includuser != null" >
+        #{includuser,jdbcType=VARCHAR},
+      </if>
+      <if test="desicuser != null" >
+        #{desicuser,jdbcType=VARCHAR},
+      </if>
+      <if test="includmobilephone != null" >
+        #{includmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="includphone != null" >
+        #{includphone,jdbcType=VARCHAR},
+      </if>
+      <if test="desimobilephone != null" >
+        #{desimobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="desiphone != null" >
+        #{desiphone,jdbcType=VARCHAR},
+      </if>
+      <if test="managername != null" >
+        #{managername,jdbcType=VARCHAR},
+      </if>
+      <if test="managerid != null" >
+        #{managerid,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatortime != null" >
+        #{operatortime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu != null" >
+        #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="qianyuedate != null" >
+        #{qianyuedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractnum != null" >
+        #{contractnum,jdbcType=VARCHAR},
+      </if>
+      <if test="contractmoney != null" >
+        #{contractmoney,jdbcType=DOUBLE},
+      </if>
+      <if test="visitStartTime != null" >
+        #{visitStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitEndTime != null" >
+        #{visitEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerType != null" >
+        #{customerType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.customerinfo.bo.CustomerInfoBo" >
+    update bs_customerinfo
+    <set >
+      <if test="companyname != null" >
+        companyname = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="contactuser != null" >
+        contactuser = #{contactuser,jdbcType=VARCHAR},
+      </if>
+      <if test="zhiwu != null" >
+        zhiwu = #{zhiwu,jdbcType=VARCHAR},
+      </if>
+      <if test="companyphone != null" >
+        companyphone = #{companyphone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyaddress != null" >
+        companyaddress = #{companyaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personmobilephone != null" >
+        personmobilephone = #{personmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="projecttype != null" >
+        projecttype = #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        fax = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="includuser != null" >
+        includuser = #{includuser,jdbcType=VARCHAR},
+      </if>
+      <if test="desicuser != null" >
+        desicuser = #{desicuser,jdbcType=VARCHAR},
+      </if>
+      <if test="includmobilephone != null" >
+        includmobilephone = #{includmobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="includphone != null" >
+        includphone = #{includphone,jdbcType=VARCHAR},
+      </if>
+      <if test="desimobilephone != null" >
+        desimobilephone = #{desimobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="desiphone != null" >
+        desiphone = #{desiphone,jdbcType=VARCHAR},
+      </if>
+      <if test="managername != null" >
+        managername = #{managername,jdbcType=VARCHAR},
+      </if>
+      <if test="managerid != null" >
+        managerid = #{managerid,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatortime != null" >
+        operatortime = #{operatortime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu != null" >
+        beizhu = #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="qianyuedate != null" >
+        qianyuedate = #{qianyuedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractnum != null" >
+        contractnum = #{contractnum,jdbcType=VARCHAR},
+      </if>
+      <if test="contractmoney != null" >
+        contractmoney = #{contractmoney,jdbcType=DOUBLE},
+      </if>
+      <if test="visitStartTime != null" >
+       visitStartTime = #{visitStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitEndTime != null" >
+        visitEndTime = #{visitEndTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="renlingDate != null" >
+        renlingDate = #{renlingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerType != null" >
+        customerType = #{customerType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.customerinfo.model.CustomerInfo" >
+    update bs_customerinfo
+    set companyname = #{companyname,jdbcType=VARCHAR},
+      contactuser = #{contactuser,jdbcType=VARCHAR},
+      zhiwu = #{zhiwu,jdbcType=VARCHAR},
+      companyphone = #{companyphone,jdbcType=VARCHAR},
+      companyaddress = #{companyaddress,jdbcType=VARCHAR},
+      personmobilephone = #{personmobilephone,jdbcType=VARCHAR},
+      projecttype = #{projecttype,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      fax = #{fax,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      includuser = #{includuser,jdbcType=VARCHAR},
+      desicuser = #{desicuser,jdbcType=VARCHAR},
+      includmobilephone = #{includmobilephone,jdbcType=VARCHAR},
+      includphone = #{includphone,jdbcType=VARCHAR},
+      desimobilephone = #{desimobilephone,jdbcType=VARCHAR},
+      desiphone = #{desiphone,jdbcType=VARCHAR},
+      managername = #{managername,jdbcType=VARCHAR},
+      managerid = #{managerid,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      operatortime = #{operatortime,jdbcType=TIMESTAMP},
+      beizhu = #{beizhu,jdbcType=VARCHAR},
+      qianyuedate = #{qianyuedate,jdbcType=TIMESTAMP},
+      contractnum = #{contractnum,jdbcType=VARCHAR},
+      contractmoney = #{contractmoney,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateCustomInfoPublic" parameterType="com.bayside.app.opinion.war.customerinfo.model.CustomerInfo">
+       update bs_customerinfo
+        set status = #{status,jdbcType=INTEGER},
+        managername = #{managername,jdbcType=VARCHAR},
+        managerid = #{managerid,jdbcType=VARCHAR}
+       where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

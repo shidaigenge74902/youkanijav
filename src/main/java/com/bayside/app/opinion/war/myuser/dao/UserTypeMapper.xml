@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.myuser.dao.UserTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.myuser.model.UserType" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="typename" property="typename" jdbcType="VARCHAR" />
+    <result column="typecode" property="typecode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMap" type="com.bayside.app.opinion.war.myuser.bo.UserTypeBo" extends="BaseResultMap">
+ <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="typename" property="typename" jdbcType="VARCHAR" />
+    <result column="typecode" property="typecode" jdbcType="VARCHAR" />
+   </resultMap>
+  <sql id="Base_Column_List" >
+    id, typename, typecode
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user_type
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectUserTypePower" resultMap="ResultMap">
+      SELECT type.id id,type.typename,type.typecode,
+	 MAX(CASE WHEN NAME='专题个数' THEN cansetword  END) subjectnum,
+		MAX(CASE WHEN NAME='人物个数' THEN cansetword  END) personnum,
+		MAX(CASE WHEN NAME='关键词个数' THEN cansetword  END) keywordNum,
+		MAX(CASE WHEN NAME='两微一端监测项' THEN cansetword  END) jiancenum,
+		MAX(CASE WHEN NAME='预警信息设置个数' THEN cansetword  END) yujingnum,
+		MAX(CASE WHEN NAME='专报生成次数' THEN cansetword  END) subjectReport,
+		MAX(CASE WHEN NAME='云搜索次数' THEN cansetword  END) cloudnum,
+		MAX(CASE WHEN NAME='日报开通' THEN status  END) dayReport,
+		MAX(CASE WHEN NAME='周报开通' THEN status  END) weekReport,
+		MAX(CASE WHEN NAME='月报开通' THEN status  END) monthReport,
+		MAX(CASE WHEN NAME='人工报告开通' THEN status  END) setReport,
+		MAX(CASE WHEN NAME='模板可选择数量' THEN cansetword  END) modalNum,
+		MAX(CASE WHEN NAME='微监测开通' THEN status  END) microopen,
+		MAX(CASE WHEN NAME='子账号个数' THEN cansetword  END) sonnum,
+		MAX(CASE WHEN NAME='有效期限' THEN cansetword  END) expirdate,
+		MAX(CASE WHEN NAME='重点关注个数' THEN cansetword  END) emphasisnum,
+		MAX(CASE WHEN NAME='媒体开通' THEN status  END) ismedia
+
+		FROM bs_standerpower left join bs_user_type as type on type.id = bs_standerpower.typeid group by bs_standerpower.typeid
+  </select>
+  
+   <select id="selectByTypeName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user_type
+    where typecode = #{typecode,jdbcType=VARCHAR}
+  </select>
+   <select id="selectUserTypeByName" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.UserType">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user_type
+    where typename = #{typename,jdbcType=VARCHAR}
+  </select>
+   <select id="selectUserType" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_user_type
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_user_type
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.myuser.model.UserType" >
+    insert into bs_user_type (id, typename, typecode
+      )
+    values (#{id,jdbcType=VARCHAR}, #{typename,jdbcType=VARCHAR}, #{typecode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.myuser.model.UserType" >
+    insert into bs_user_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="typename != null" >
+        typename,
+      </if>
+      <if test="typecode != null" >
+        typecode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typecode != null" >
+        #{typecode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.myuser.model.UserType" >
+    update bs_user_type
+    <set >
+      <if test="typename != null" >
+        typename = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typecode != null" >
+        typecode = #{typecode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.UserType" >
+    update bs_user_type
+    set typename = #{typename,jdbcType=VARCHAR},
+      typecode = #{typecode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

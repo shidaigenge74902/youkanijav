@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.manager.deployment.dao.CollectManageMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.manager.deployment.model.CollectManage" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, update_time, path,file_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_collect_manage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bs_collect_manage
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.manager.deployment.model.CollectManage" >
+    insert into bs_collect_manage (id, update_time, path, file_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{path,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.manager.deployment.model.CollectManage" >
+    insert into bs_collect_manage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.manager.deployment.model.CollectManage" >
+    update bs_collect_manage
+    <set >
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.manager.deployment.model.CollectManage" >
+    update bs_collect_manage
+    set update_time = #{updateTime,jdbcType=TIMESTAMP},
+      path = #{path,jdbcType=VARCHAR},file_name = #{fileName,jdbcType=VARCHAR} 
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectNextId" parameterType="com.bayside.app.opinion.manager.deployment.model.CollectManage" resultType="Integer">
+   	SELECT AUTO_INCREMENT nextid FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'bs_collect_manage'
+  </select>
+</mapper>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.manager.deployment.dao.DeploymentNumMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.manager.deployment.model.DeploymentNum" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="weibo0" property="weibo0" jdbcType="INTEGER" />
+    <result column="weibo1" property="weibo1" jdbcType="INTEGER" />
+    <result column="weibo2" property="weibo2" jdbcType="INTEGER" />
+    <result column="weibo3" property="weibo3" jdbcType="INTEGER" />
+    <result column="weibo4" property="weibo4" jdbcType="INTEGER" />
+    <result column="tieba0" property="tieba0" jdbcType="INTEGER" />
+    <result column="tieba1" property="tieba1" jdbcType="INTEGER" />
+    <result column="tieba2" property="tieba2" jdbcType="INTEGER" />
+    <result column="tieba3" property="tieba3" jdbcType="INTEGER" />
+    <result column="tieba4" property="tieba4" jdbcType="INTEGER" />
+    <result column="abroad" property="abroad" jdbcType="INTEGER" />
+    <result column="metasearchNoGoogle" property="metasearchnogoogle" jdbcType="INTEGER" />
+    <result column="metasearch" property="metasearch" jdbcType="INTEGER" />
+    <result column="weixin" property="weixin" jdbcType="INTEGER" />
+    <result column="metasearchbaidu" property="metasearchbaidu" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, weibo0, weibo1, weibo2, weibo3, weibo4, tieba0, tieba1, tieba2, tieba3, tieba4, 
+    abroad, metasearchNoGoogle, metasearch, weixin, metasearchbaidu
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_deployment_num
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_deployment_num
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.manager.deployment.model.DeploymentNum" >
+    insert into bs_deployment_num (id, weibo0, weibo1, 
+      weibo2, weibo3, weibo4, 
+      tieba0, tieba1, tieba2, 
+      tieba3, tieba4, abroad, 
+      metasearchNoGoogle, metasearch, weixin, 
+      metasearchbaidu)
+    values (#{id,jdbcType=VARCHAR}, #{weibo0,jdbcType=INTEGER}, #{weibo1,jdbcType=INTEGER}, 
+      #{weibo2,jdbcType=INTEGER}, #{weibo3,jdbcType=INTEGER}, #{weibo4,jdbcType=INTEGER}, 
+      #{tieba0,jdbcType=INTEGER}, #{tieba1,jdbcType=INTEGER}, #{tieba2,jdbcType=INTEGER}, 
+      #{tieba3,jdbcType=INTEGER}, #{tieba4,jdbcType=INTEGER}, #{abroad,jdbcType=INTEGER}, 
+      #{metasearchnogoogle,jdbcType=INTEGER}, #{metasearch,jdbcType=INTEGER}, #{weixin,jdbcType=INTEGER}, 
+      #{metasearchbaidu,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.manager.deployment.model.DeploymentNum" >
+    insert into bs_deployment_num
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="weibo0 != null" >
+        weibo0,
+      </if>
+      <if test="weibo1 != null" >
+        weibo1,
+      </if>
+      <if test="weibo2 != null" >
+        weibo2,
+      </if>
+      <if test="weibo3 != null" >
+        weibo3,
+      </if>
+      <if test="weibo4 != null" >
+        weibo4,
+      </if>
+      <if test="tieba0 != null" >
+        tieba0,
+      </if>
+      <if test="tieba1 != null" >
+        tieba1,
+      </if>
+      <if test="tieba2 != null" >
+        tieba2,
+      </if>
+      <if test="tieba3 != null" >
+        tieba3,
+      </if>
+      <if test="tieba4 != null" >
+        tieba4,
+      </if>
+      <if test="abroad != null" >
+        abroad,
+      </if>
+      <if test="metasearchnogoogle != null" >
+        metasearchNoGoogle,
+      </if>
+      <if test="metasearch != null" >
+        metasearch,
+      </if>
+      <if test="weixin != null" >
+        weixin,
+      </if>
+      <if test="metasearchbaidu != null" >
+        metasearchbaidu,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="weibo0 != null" >
+        #{weibo0,jdbcType=INTEGER},
+      </if>
+      <if test="weibo1 != null" >
+        #{weibo1,jdbcType=INTEGER},
+      </if>
+      <if test="weibo2 != null" >
+        #{weibo2,jdbcType=INTEGER},
+      </if>
+      <if test="weibo3 != null" >
+        #{weibo3,jdbcType=INTEGER},
+      </if>
+      <if test="weibo4 != null" >
+        #{weibo4,jdbcType=INTEGER},
+      </if>
+      <if test="tieba0 != null" >
+        #{tieba0,jdbcType=INTEGER},
+      </if>
+      <if test="tieba1 != null" >
+        #{tieba1,jdbcType=INTEGER},
+      </if>
+      <if test="tieba2 != null" >
+        #{tieba2,jdbcType=INTEGER},
+      </if>
+      <if test="tieba3 != null" >
+        #{tieba3,jdbcType=INTEGER},
+      </if>
+      <if test="tieba4 != null" >
+        #{tieba4,jdbcType=INTEGER},
+      </if>
+      <if test="abroad != null" >
+        #{abroad,jdbcType=INTEGER},
+      </if>
+      <if test="metasearchnogoogle != null" >
+        #{metasearchnogoogle,jdbcType=INTEGER},
+      </if>
+      <if test="metasearch != null" >
+        #{metasearch,jdbcType=INTEGER},
+      </if>
+      <if test="weixin != null" >
+        #{weixin,jdbcType=INTEGER},
+      </if>
+      <if test="metasearchbaidu != null" >
+        #{metasearchbaidu,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.manager.deployment.model.DeploymentNum" >
+    update bs_deployment_num
+    <set >
+      <if test="weibo0 != null" >
+        weibo0 = #{weibo0,jdbcType=INTEGER},
+      </if>
+      <if test="weibo1 != null" >
+        weibo1 = #{weibo1,jdbcType=INTEGER},
+      </if>
+      <if test="weibo2 != null" >
+        weibo2 = #{weibo2,jdbcType=INTEGER},
+      </if>
+      <if test="weibo3 != null" >
+        weibo3 = #{weibo3,jdbcType=INTEGER},
+      </if>
+      <if test="weibo4 != null" >
+        weibo4 = #{weibo4,jdbcType=INTEGER},
+      </if>
+      <if test="tieba0 != null" >
+        tieba0 = #{tieba0,jdbcType=INTEGER},
+      </if>
+      <if test="tieba1 != null" >
+        tieba1 = #{tieba1,jdbcType=INTEGER},
+      </if>
+      <if test="tieba2 != null" >
+        tieba2 = #{tieba2,jdbcType=INTEGER},
+      </if>
+      <if test="tieba3 != null" >
+        tieba3 = #{tieba3,jdbcType=INTEGER},
+      </if>
+      <if test="tieba4 != null" >
+        tieba4 = #{tieba4,jdbcType=INTEGER},
+      </if>
+      <if test="abroad != null" >
+        abroad = #{abroad,jdbcType=INTEGER},
+      </if>
+      <if test="metasearchnogoogle != null" >
+        metasearchNoGoogle = #{metasearchnogoogle,jdbcType=INTEGER},
+      </if>
+      <if test="metasearch != null" >
+        metasearch = #{metasearch,jdbcType=INTEGER},
+      </if>
+      <if test="weixin != null" >
+        weixin = #{weixin,jdbcType=INTEGER},
+      </if>
+      <if test="metasearchbaidu != null" >
+        metasearchbaidu = #{metasearchbaidu,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.manager.deployment.model.DeploymentNum" >
+    update bs_deployment_num
+    set weibo0 = #{weibo0,jdbcType=INTEGER},
+      weibo1 = #{weibo1,jdbcType=INTEGER},
+      weibo2 = #{weibo2,jdbcType=INTEGER},
+      weibo3 = #{weibo3,jdbcType=INTEGER},
+      weibo4 = #{weibo4,jdbcType=INTEGER},
+      tieba0 = #{tieba0,jdbcType=INTEGER},
+      tieba1 = #{tieba1,jdbcType=INTEGER},
+      tieba2 = #{tieba2,jdbcType=INTEGER},
+      tieba3 = #{tieba3,jdbcType=INTEGER},
+      tieba4 = #{tieba4,jdbcType=INTEGER},
+      abroad = #{abroad,jdbcType=INTEGER},
+      metasearchNoGoogle = #{metasearchnogoogle,jdbcType=INTEGER},
+      metasearch = #{metasearch,jdbcType=INTEGER},
+      weixin = #{weixin,jdbcType=INTEGER},
+      metasearchbaidu = #{metasearchbaidu,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

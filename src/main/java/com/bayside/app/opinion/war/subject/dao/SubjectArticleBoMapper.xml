@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.subject.dao.SubjectArticleBoMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="tittle" property="tittle" jdbcType="VARCHAR" />
+    <result column="pubdate" property="pubdate" jdbcType="TIMESTAMP" />
+    <result column="data_source" property="dataSource" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="emotion" property="emotion" jdbcType="VARCHAR" />
+    <result column="content_type" property="contentType" jdbcType="VARCHAR" />
+    <result column="formats" property="formats" jdbcType="VARCHAR" />
+    <result column="readcount" property="readcount" jdbcType="INTEGER" />
+    <result column="commtcount" property="commtcount" jdbcType="INTEGER" />
+    <result column="repeatcount" property="repeatcount" jdbcType="INTEGER" />
+    <result column="aggreecount" property="aggreecount" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="similarnum" property="similarnum" jdbcType="INTEGER" />
+    <result column="relate_word" property="relateWord" jdbcType="INTEGER" />
+    <result column="opinion_word" property="opinionWord" jdbcType="INTEGER" />
+    <result column="negative_word" property="negativeWord" jdbcType="INTEGER" />
+    <result column="positive_word" property="positiveWord" jdbcType="INTEGER" />
+    <result column="warning_word" property="warningWord" jdbcType="INTEGER" />
+    <result column="newsindex" property="newsindex" jdbcType="INTEGER" />
+    <result column="search_num" property="searchNum" jdbcType="INTEGER" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="url" property="url" jdbcType="LONGVARCHAR" />
+    <result column="simhashcode" property="simhashcode" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="ResultMapAll" type="com.bayside.app.opinion.war.subject.bo.SubJectArticleBo" extends="BaseResultMap">
+    <result column="subjectid" property="subjectid" jdbcType="VARCHAR" />
+    <result column="articleid" property="articleid" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="keyword_rule" property="keywordRule" jdbcType="VARCHAR" />
+    <result column="reportinfo" property="reportinfo" jdbcType="BIT" />
+    <result column="attention" property="attention" jdbcType="BIT" />
+    <result column="warning" property="warning" jdbcType="BIT" />
+    <result column="readsign" property="readsign" jdbcType="BIT" />
+    <result column="briefing" property="briefing" jdbcType="BIT" />
+    <result column="briefing" property="briefing" jdbcType="BIT" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, tittle, pubdate, data_source, author, emotion, content_type, formats, readcount, 
+    commtcount, repeatcount, aggreecount, score, similarnum, relate_word, opinion_word, 
+    negative_word, positive_word, warning_word, newsindex, search_num, updatetime, content, 
+    url, subjectid, articleid, userid, keyword_rule, reportinfo, attention, warning, readsign, 
+    briefing
+  </sql>
+   <select id="filterCom" resultMap="ResultMapAll" parameterType="com.bayside.app.opinion.war.subject.bo.SubJectArticleBo" >
+   
+      select p.articleid,p.emotion,p.id mid,p.subjectid,
+	    p.userid,
+		p.keyword_rule,
+		p.warning,
+		p.attentiontime,
+	 	s.ID,
+		s.tittle,
+		s.pubdate fabuTime,
+		s.data_source,
+		s.author,
+		s.formats,
+		left(s.content,180) content,
+		s.url
+     from (
+       select articleid,emotion,id,subjectid,
+	    userid,
+		keyword_rule,
+		warning,
+		attentiontime
+		from bs_subject_m_article
+		 <where>
+               `userid`= #{userid,jdbcType=VARCHAR}
+	    		 <if test="subjectid != null and subjectid !=''" >
+	       		   and subjectid = #{subjectid,jdbcType=VARCHAR}
+				 </if>
+				 <if test="formats != null and formats !=''" >
+	       		   and formats = #{formats,jdbcType=VARCHAR}
+				 </if>
+				 <if test="startTime != null and startTime !=''">
+				 and DATE(pubdate) &gt;= #{startTime,jdbcType=TIMESTAMP}
+				</if>
+				<if test="edtime != null and edtime !=''">
+				 and DATE(pubdate) &lt;= #{edtime,jdbcType=TIMESTAMP}
+				</if>
+				<if test="subjectList !=null">
+				   and subjectid in 
+				    <foreach collection="subjectList" index="index" item="subjectid" open="(" separator="," close=")">  
+                      #{subjectid} 
+                   </foreach>
+				</if>
+	      </where>
+                <if test="uptime !=null and uptime !=''">
+                   order by dependency desc
+                </if>
+				<if test="pubtime !=null and pubtime !=''">
+				    order by pubdate desc
+				 </if> 
+				limit 60000
+     ) as p inner JOIN bs_subject_article as s on p.articleid =s.id  
+ 
+  </select>
+   <select id="filterComlist" resultMap="ResultMapAll" parameterType="java.lang.String" >
+ <!--   select p.articleid,p.emotion,p.id mid,p.subjectid,
+	    p.userid,
+		p.keyword_rule,
+		p.attention,
+		p.warning,
+	 	s.ID,
+		s.tittle,
+		s.pubdate fabuTime,
+		s.data_source,
+		s.author,
+		s.formats
+		left(s.content,180) content,
+		s.url
+     from bs_subject_m_article as p LEFT JOIN bs_subject_article as s on p.articleid =s.id 
+      where
+              p.articleid in
+    <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+       #{id} 
+    </foreach>  -->
+    
+     select p.articleid,p.emotion,p.id mid,p.subjectid,
+	    p.userid,
+		p.keyword_rule,
+		p.attention,
+		p.warning,
+	 	s.ID,
+		s.tittle,
+		s.pubdate fabuTime,
+		s.data_source,
+		s.author,
+		s.formats,
+		left(s.content,180) content,
+		s.url
+     from (
+       select articleid,emotion,id,subjectid,
+	    userid,
+		keyword_rule,
+		attention,
+		warning
+		from bs_subject_m_article
+		 where
+            articleid in
+    <foreach collection="list" index="index" item="id" open="(" separator="," close=")">  
+       #{id} 
+    </foreach>
+     
+     ) as p inner JOIN bs_subject_article as s on p.articleid =s.id 
+    
+  </select>
+  <select id="dowloadfilterCom" resultMap="ResultMapAll" parameterType="java.lang.String" >
+  <!--  select p.articleid,p.emotion,p.id mid,p.subjectid,
+	    p.userid,
+		p.keyword_rule,
+		p.warning,
+		p.attentiontime,briefing,
+	 	s.ID,
+		s.tittle,
+		s.pubdate fabuTime,
+		s.data_source,
+		s.author,
+		s.content_type,
+		s.formats,
+		left(s.content,180) content,
+		s.url
+     from bs_subject_m_article as p LEFT JOIN bs_subject_article as s on p.articleid =s.id 
+      where
+	             p.`userid`= #{userid,jdbcType=VARCHAR}
+	            
+	    		 <if test="subjectid != null and subjectid !=''" >
+	       		   and p.subjectid = #{subjectid,jdbcType=VARCHAR}
+				 </if>
+				 <if test="startTime != null and startTime !=''">
+				 and DATE(p.pubdate) &gt;= #{startTime,jdbcType=TIMESTAMP}
+				</if>
+				<if test="edtime != null and edtime !=''">
+				 and DATE(p.pubdate) &lt;= #{edtime,jdbcType=TIMESTAMP}
+				</if>
+                <if test="uptime !=null and uptime !=''">
+                   order by p.dependency desc
+                </if>
+				<if test="pubtime !=null and pubtime !=''">
+				    order by p.pubdate desc
+				 </if>  -->  
+				 
+				 
+	select p.articleid,p.emotion,p.id mid,p.subjectid,
+	    p.userid,
+		p.keyword_rule,
+		p.warning,
+	 	s.ID,
+		s.tittle,
+		s.pubdate fabuTime,
+		s.data_source,
+		s.author,
+		s.content_type,
+		s.formats,
+		left(s.content,180) content,
+		s.url 
+		from (
+		select articleid,emotion,id,subjectid,
+	    userid,
+		keyword_rule,
+		warning
+		from bs_subject_m_article 
+		 where
+	             `userid`= #{userid,jdbcType=VARCHAR}
+	            
+	    		 <if test="subjectid != null and subjectid !=''" >
+	       		   and subjectid = #{subjectid,jdbcType=VARCHAR}
+				 </if>
+				 <if test="startTime != null and startTime !=''">
+				 and DATE(pubdate) &gt;= #{startTime,jdbcType=TIMESTAMP}
+				</if>
+				<if test="edtime != null and edtime !=''">
+				 and DATE(pubdate) &lt;= #{edtime,jdbcType=TIMESTAMP}
+				</if>
+                <if test="uptime !=null and uptime !=''">
+                   order by dependency desc
+                </if>
+				<if test="pubtime !=null and pubtime !=''">
+				    order by pubdate desc
+				 </if>   
+		   limit 60000
+		)as p LEFT JOIN bs_subject_article as s on p.articleid =s.id 
+				 
+
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_subject_article
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="filter" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_subject_article
+    <where>
+     id in 
+    <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+       #{ids[${index}]}
+    </foreach> 
+    <if test="startTime != null and startTime !=''">
+     and pubdate &gt;= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null and endTime !=''">
+     and pubdate &lt;= #{endTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="emotion != null and emotion !=''">
+     and emotion = #{emotion,jdbcType=VARCHAR} 
+    </if>
+    <if test="contentType != null and contentType!=''">
+     and content_type = #{contentType,jdbcType=VARCHAR}
+    </if>
+    <if test="formats != null and formats !=''">
+     and formats = #{formats,jdbcType=VARCHAR}
+    </if>
+    </where> 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_subject_article
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    insert into bs_subject_article (ID, tittle, pubdate, 
+      data_source, author, emotion, 
+      content_type, formats, readcount, 
+      commtcount, repeatcount, aggreecount, 
+      score, similarnum, relate_word, 
+      opinion_word, negative_word, positive_word, 
+      warning_word, newsindex, search_num, 
+      updatetime, content, url
+      )
+    values (#{id,jdbcType=VARCHAR}, #{tittle,jdbcType=VARCHAR}, #{pubdate,jdbcType=TIMESTAMP}, 
+      #{dataSource,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{emotion,jdbcType=VARCHAR}, 
+      #{contentType,jdbcType=VARCHAR}, #{formats,jdbcType=VARCHAR}, #{readcount,jdbcType=INTEGER}, 
+      #{commtcount,jdbcType=INTEGER}, #{repeatcount,jdbcType=INTEGER}, #{aggreecount,jdbcType=INTEGER}, 
+      #{score,jdbcType=INTEGER}, #{similarnum,jdbcType=INTEGER}, #{relateWord,jdbcType=INTEGER}, 
+      #{opinionWord,jdbcType=INTEGER}, #{negativeWord,jdbcType=INTEGER}, #{positiveWord,jdbcType=INTEGER}, 
+      #{warningWord,jdbcType=INTEGER}, #{newsindex,jdbcType=INTEGER}, #{searchNum,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}, #{url,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    insert into bs_subject_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="tittle != null" >
+        tittle,
+      </if>
+      <if test="pubdate != null" >
+        pubdate,
+      </if>
+      <if test="dataSource != null" >
+        data_source,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="emotion != null" >
+        emotion,
+      </if>
+      <if test="contentType != null" >
+        content_type,
+      </if>
+      <if test="formats != null" >
+        formats,
+      </if>
+      <if test="readcount != null" >
+        readcount,
+      </if>
+      <if test="commtcount != null" >
+        commtcount,
+      </if>
+      <if test="repeatcount != null" >
+        repeatcount,
+      </if>
+      <if test="aggreecount != null" >
+        aggreecount,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="similarnum != null" >
+        similarnum,
+      </if>
+      <if test="relateWord != null" >
+        relate_word,
+      </if>
+      <if test="opinionWord != null" >
+        opinion_word,
+      </if>
+      <if test="negativeWord != null" >
+        negative_word,
+      </if>
+      <if test="positiveWord != null" >
+        positive_word,
+      </if>
+      <if test="warningWord != null" >
+        warning_word,
+      </if>
+      <if test="newsindex != null" >
+        newsindex,
+      </if>
+      <if test="searchNum != null" >
+        search_num,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="tittle != null" >
+        #{tittle,jdbcType=VARCHAR},
+      </if>
+      <if test="pubdate != null" >
+        #{pubdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataSource != null" >
+        #{dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="emotion != null" >
+        #{emotion,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        #{contentType,jdbcType=VARCHAR},
+      </if>
+      <if test="formats != null" >
+        #{formats,jdbcType=VARCHAR},
+      </if>
+      <if test="readcount != null" >
+        #{readcount,jdbcType=INTEGER},
+      </if>
+      <if test="commtcount != null" >
+        #{commtcount,jdbcType=INTEGER},
+      </if>
+      <if test="repeatcount != null" >
+        #{repeatcount,jdbcType=INTEGER},
+      </if>
+      <if test="aggreecount != null" >
+        #{aggreecount,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="similarnum != null" >
+        #{similarnum,jdbcType=INTEGER},
+      </if>
+      <if test="relateWord != null" >
+        #{relateWord,jdbcType=INTEGER},
+      </if>
+      <if test="opinionWord != null" >
+        #{opinionWord,jdbcType=INTEGER},
+      </if>
+      <if test="negativeWord != null" >
+        #{negativeWord,jdbcType=INTEGER},
+      </if>
+      <if test="positiveWord != null" >
+        #{positiveWord,jdbcType=INTEGER},
+      </if>
+      <if test="warningWord != null" >
+        #{warningWord,jdbcType=INTEGER},
+      </if>
+      <if test="newsindex != null" >
+        #{newsindex,jdbcType=INTEGER},
+      </if>
+      <if test="searchNum != null" >
+        #{searchNum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    update bs_subject_article
+    <set >
+      <if test="tittle != null" >
+        tittle = #{tittle,jdbcType=VARCHAR},
+      </if>
+      <if test="pubdate != null" >
+        pubdate = #{pubdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataSource != null" >
+        data_source = #{dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="emotion != null" >
+        emotion = #{emotion,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        content_type = #{contentType,jdbcType=VARCHAR},
+      </if>
+      <if test="formats != null" >
+        formats = #{formats,jdbcType=VARCHAR},
+      </if>
+      <if test="readcount != null" >
+        readcount = #{readcount,jdbcType=INTEGER},
+      </if>
+      <if test="commtcount != null" >
+        commtcount = #{commtcount,jdbcType=INTEGER},
+      </if>
+      <if test="repeatcount != null" >
+        repeatcount = #{repeatcount,jdbcType=INTEGER},
+      </if>
+      <if test="aggreecount != null" >
+        aggreecount = #{aggreecount,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="similarnum != null" >
+        similarnum = #{similarnum,jdbcType=INTEGER},
+      </if>
+      <if test="relateWord != null" >
+        relate_word = #{relateWord,jdbcType=INTEGER},
+      </if>
+      <if test="opinionWord != null" >
+        opinion_word = #{opinionWord,jdbcType=INTEGER},
+      </if>
+      <if test="negativeWord != null" >
+        negative_word = #{negativeWord,jdbcType=INTEGER},
+      </if>
+      <if test="positiveWord != null" >
+        positive_word = #{positiveWord,jdbcType=INTEGER},
+      </if>
+      <if test="warningWord != null" >
+        warning_word = #{warningWord,jdbcType=INTEGER},
+      </if>
+      <if test="newsindex != null" >
+        newsindex = #{newsindex,jdbcType=INTEGER},
+      </if>
+      <if test="searchNum != null" >
+        search_num = #{searchNum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.subject.model.SubjectArticle" >
+    update bs_subject_article
+    set tittle = #{tittle,jdbcType=VARCHAR},
+      pubdate = #{pubdate,jdbcType=TIMESTAMP},
+      data_source = #{dataSource,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      emotion = #{emotion,jdbcType=VARCHAR},
+      content_type = #{contentType,jdbcType=VARCHAR},
+      formats = #{formats,jdbcType=VARCHAR},
+      readcount = #{readcount,jdbcType=INTEGER},
+      commtcount = #{commtcount,jdbcType=INTEGER},
+      repeatcount = #{repeatcount,jdbcType=INTEGER},
+      aggreecount = #{aggreecount,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      similarnum = #{similarnum,jdbcType=INTEGER},
+      relate_word = #{relateWord,jdbcType=INTEGER},
+      opinion_word = #{opinionWord,jdbcType=INTEGER},
+      negative_word = #{negativeWord,jdbcType=INTEGER},
+      positive_word = #{positiveWord,jdbcType=INTEGER},
+      warning_word = #{warningWord,jdbcType=INTEGER},
+      newsindex = #{newsindex,jdbcType=INTEGER},
+      search_num = #{searchNum,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR},
+      url = #{url,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

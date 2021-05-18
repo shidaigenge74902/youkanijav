@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bayside.app.opinion.war.myuser.dao.ManagerUserMapper" >
+  <resultMap id="BaseResultMap" type="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    <result column="registertime" property="registertime" jdbcType="TIMESTAMP" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="img" property="img" jdbcType="VARCHAR" />
+    <result column="parentid" property="parentid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, tag, name, password, mobilephone, registertime, email, logo, content, address, img, parentid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByParentId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+   
+  </select>
+  <select id="selectSonManager" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser where parentid = #{parentid,jdbcType=VARCHAR}
+   
+  </select>
+   <select id="selectByTag" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where tag in ('1', '4', '0')
+  </select>
+  <select id="selectInfoByPa" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser">
+    select 
+     <include refid="Base_Column_List" />
+    from bs_manageruser
+    where  password = #{password,jdbcType = VARCHAR} and mobilephone = #{name,jdbcType = VARCHAR} 
+  </select>
+  <select id="selectManagerByPhone" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where mobilephone = #{mobilephone,jdbcType = VARCHAR}
+  </select>
+  <select id="selectManagerByName" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where name = #{name,jdbcType = VARCHAR}
+  </select>
+   <select id="selectManagerUserByName" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where name = #{name,jdbcType = VARCHAR}
+  </select>
+  <select id="selectAllManager" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+    where tag = #{tag,jdbcType=INTEGER}
+  </select>
+    <select id="selectManager" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser
+  </select>
+   <select id="selectManagerByNick" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser where name = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="selectManagerById" resultMap="BaseResultMap" parameterType="com.bayside.app.opinion.war.myuser.bo.UserBo">
+    select 
+    <include refid="Base_Column_List" />
+    from bs_manageruser where 1=1 and tag!=2
+    <if test="managerid!=null and managerid!=''">
+     and id=#{managerid,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bs_manageruser
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    insert into bs_manageruser (id, tag, name, 
+      password, mobilephone, registertime, 
+      email, logo, content, address, img)
+    values (#{id,jdbcType=VARCHAR}, #{tag,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{registertime,jdbcType=TIMESTAMP}, 
+      #{email,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    insert into bs_manageruser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="mobilephone != null" >
+        mobilephone,
+      </if>
+      <if test="registertime != null" >
+        registertime,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="logo != null" >
+        logo,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+       <if test="img != null" >
+        img,
+      </if>
+      <if test="parentid != null" >
+        parentid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="registertime != null" >
+        #{registertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    update bs_manageruser
+    <set >
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=INTEGER},
+      </if>
+      <if test="name != null and name !=''" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password !=''" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null and mobilephone !=''" >
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="registertime != null" >
+        registertime = #{registertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null and email !=''" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+       <if test="logo != null and logo !=''" >
+       logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null and address !=''" >
+      address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null and content !=''" >
+       content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null and img!=''" >
+       img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null and parentid!=''" >
+       parentid = #{parentid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    update bs_manageruser
+    set tag = #{tag,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      registertime = #{registertime,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateManagerUserPass" parameterType="com.bayside.app.opinion.war.myuser.model.ManagerUser" >
+    update bs_manageruser
+    set 
+      password = #{password,jdbcType=VARCHAR}
+    where 1=1 and
+   (name = #{name,jdbcType=VARCHAR} or mobilephone = #{name,jdbcType = VARCHAR} or
+    email = #{name,jdbcType = VARCHAR})
+  </update>
+</mapper>
